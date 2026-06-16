@@ -1,0 +1,536 @@
+import { useState, useEffect, useCallback, useMemo } from "react";
+
+// ─── THEME ───────────────────────────────────────────────────────────────────
+const C = {
+  primary: "#FF6B35", accent: "#FFD700", bg: "#0F172A",
+  card: "#1E293B", card2: "#243044", text: "#F8FAFC",
+  muted: "#94A3B8", success: "#10B981", error: "#EF4444",
+  purple: "#8B5CF6", blue: "#3B82F6", pink: "#EC4899", border: "#2D3F5C",
+};
+
+// ─── STATIC DATA ─────────────────────────────────────────────────────────────
+const MISSIONS = [
+  { type: "speak", title: "Speak 5 Sentences", desc: "Use the AI partner to practice speaking 5 full sentences.", xp: 50, icon: "🎤", color: C.primary, duration: 5 },
+  { type: "vocab", title: "Vocabulary Quiz", desc: "Learn 10 new English words and use them in context.", xp: 40, icon: "📚", color: C.blue, duration: 4 },
+  { type: "topic", title: "Topic Discussion", desc: "Discuss today's topic for 3 minutes with the AI partner.", xp: 60, icon: "💬", color: C.purple, duration: 6 },
+  { type: "pronunciation", title: "Pronunciation Drill", desc: "Practice tongue twisters and difficult sounds.", xp: 35, icon: "🗣️", color: C.pink, duration: 3 },
+  { type: "grammar", title: "Grammar Challenge", desc: "Complete 5 grammar exercises and get instant feedback.", xp: 45, icon: "✏️", color: C.success, duration: 4 },
+];
+
+const BADGES = [
+  { type: "first_mission", name: "Mission Starter", icon: "🚩", color: C.blue, desc: "First mission done", threshold: 1, metric: "missions" },
+  { type: "streak_3", name: "3-Day Streak", icon: "🔥", color: C.primary, desc: "3 days in a row!", threshold: 3, metric: "streak" },
+  { type: "streak_7", name: "Week Warrior", icon: "⚡", color: "#FF4444", desc: "7-day streak!", threshold: 7, metric: "streak" },
+  { type: "xp_100", name: "XP Collector", icon: "⭐", color: C.accent, desc: "Earned 100 XP", threshold: 100, metric: "xp" },
+  { type: "xp_500", name: "XP Hunter", icon: "🏅", color: C.accent, desc: "Earned 500 XP", threshold: 500, metric: "xp" },
+  { type: "xp_1000", name: "XP Master", icon: "🎖️", color: "#FFB800", desc: "Earned 1000 XP", threshold: 1000, metric: "xp" },
+  { type: "speaker_30", name: "Chatterbox", icon: "🎧", color: C.purple, desc: "30 min speaking", threshold: 30, metric: "speaking_minutes" },
+  { type: "conversations_5", name: "Convo Pro", icon: "💬", color: C.pink, desc: "5 AI conversations", threshold: 5, metric: "conversations" },
+  { type: "level_5", name: "Level 5 Ace", icon: "👑", color: C.primary, desc: "Reached Level 5", threshold: 5, metric: "level" },
+];
+
+const LEVELS = [
+  { level: 1, name: "Beginner", minXp: 0, maxXp: 100, color: C.blue },
+  { level: 2, name: "Elementary", minXp: 100, maxXp: 250, color: C.success },
+  { level: 3, name: "Pre-Intermediate", minXp: 250, maxXp: 500, color: C.purple },
+  { level: 4, name: "Intermediate", minXp: 500, maxXp: 900, color: C.primary },
+  { level: 5, name: "Upper-Intermediate", minXp: 900, maxXp: 1400, color: C.pink },
+  { level: 6, name: "Advanced", minXp: 1400, maxXp: 2000, color: C.accent },
+  { level: 7, name: "Proficient", minXp: 2000, maxXp: 9999, color: "#FFB800" },
+];
+
+const VOCABULARY = [
+  { word: "Eloquent", meaning: "Fluent and persuasive in speaking", example: "She gave an eloquent speech." },
+  { word: "Articulate", meaning: "Able to speak fluently and clearly", example: "He is very articulate about his ideas." },
+  { word: "Persist", meaning: "Continue firmly despite difficulty", example: "You must persist to achieve your goals." },
+  { word: "Flourish", meaning: "Grow or develop in a healthy way", example: "The student flourished under good guidance." },
+  { word: "Aspire", meaning: "Direct hopes toward achieving something", example: "He aspires to become fluent in English." },
+  { word: "Convey", meaning: "Make an idea or feeling known", example: "Convey your message clearly." },
+  { word: "Enhance", meaning: "Intensify or improve quality", example: "Practice will enhance your speaking skills." },
+  { word: "Diligent", meaning: "Showing care and effort in work", example: "Diligent students make great progress." },
+  { word: "Confident", meaning: "Certain about your abilities", example: "Speak confidently in English every day." },
+  { word: "Engross", meaning: "Absorb all attention or interest", example: "The topic was so engrossing." },
+];
+
+const GRAMMAR_Qs = [
+  { q: "She ___ to school every day.", opts: ["go", "goes", "going", "gone"], ans: 1 },
+  { q: "I have been studying English ___ 2 years.", opts: ["since", "for", "from", "during"], ans: 1 },
+  { q: "If it rains, we ___ stay inside.", opts: ["would", "will", "shall", "are"], ans: 1 },
+  { q: "He ___ finished his homework already.", opts: ["has", "have", "had", "is"], ans: 0 },
+  { q: "The book ___ on the table.", opts: ["lay", "lie", "is", "are"], ans: 2 },
+];
+
+const TOPICS = ["Daily Life", "Travel", "Food & Cooking", "Technology", "Work & Career", "Culture & Arts"];
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function getLevelInfo(xp) {
+  return LEVELS.reduce((a, l) => xp >= l.minXp ? l : a, LEVELS[0]);
+}
+function getLevelProgress(xp) {
+  const l = getLevelInfo(xp);
+  return Math.min(1, (xp - l.minXp) / (l.maxXp - l.minXp));
+}
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function checkBadge(b, profile) {
+  const map = { missions: profile.missions, streak: profile.streak, xp: profile.xp,
+    speaking_minutes: profile.speaking_minutes, conversations: profile.conversations, level: getLevelInfo(profile.xp).level };
+  return (map[b.metric] || 0) >= b.threshold;
+}
+
+// ─── STYLES ──────────────────────────────────────────────────────────────────
+const S = {
+  app: { minHeight: "100vh", background: C.bg, color: C.text, fontFamily: "'Space Grotesk', 'Segoe UI', sans-serif", display: "flex", flexDirection: "column" },
+  header: { background: C.card, borderBottom: `1px solid ${C.border}`, padding: "0 20px", height: 60, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 50 },
+  logo: { fontWeight: 800, fontSize: "1rem", display: "flex", alignItems: "center", gap: 8 },
+  logoIcon: { width: 32, height: 32, borderRadius: 8, background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem" },
+  main: { flex: 1, padding: "20px", maxWidth: 900, margin: "0 auto", width: "100%" },
+  tabs: { display: "flex", gap: 4, background: C.card, padding: "6px", borderRadius: 14, marginBottom: 24, border: `1px solid ${C.border}` },
+  tab: (active) => ({ flex: 1, padding: "10px 8px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: "0.82rem", fontWeight: 600, transition: "all .15s",
+    background: active ? C.primary : "transparent", color: active ? "#fff" : C.muted }),
+  card: { background: C.card, borderRadius: 20, padding: 20, border: `1px solid ${C.border}`, marginBottom: 16 },
+  row: { display: "flex", alignItems: "center", gap: 12 },
+  missionIcon: (color) => ({ width: 52, height: 52, borderRadius: 14, background: color + "25", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem", flexShrink: 0 }),
+  btn: (bg, full) => ({ background: bg, color: "#fff", border: "none", padding: "12px 20px", borderRadius: 12, fontFamily: "inherit", fontWeight: 700, fontSize: "0.9rem", cursor: "pointer", transition: "transform .12s, opacity .12s", width: full ? "100%" : "auto" }),
+  xpTag: { display: "flex", alignItems: "center", gap: 4, color: C.accent, fontWeight: 700, fontSize: "0.82rem" },
+  modalOverlay: { position: "fixed", inset: 0, background: "rgba(0,0,0,.75)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999, padding: 20 },
+  modalBox: { background: C.card, borderRadius: 24, padding: 32, maxWidth: 440, width: "100%", border: `2px solid ${C.accent}60`, textAlign: "center" },
+};
+
+// ─── XP BAR ──────────────────────────────────────────────────────────────────
+function XPBar({ xp }) {
+  const lvl = getLevelInfo(xp);
+  const prog = getLevelProgress(xp);
+  const next = LEVELS.find(l => l.level === lvl.level + 1);
+  return (
+    <div style={{ marginBottom: 4 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+        <span style={{ color: lvl.color, fontWeight: 700, fontSize: "0.82rem" }}>LVL {lvl.level} · {lvl.name}</span>
+        <span style={{ color: C.muted, fontSize: "0.78rem" }}>{xp} / {lvl.maxXp} XP</span>
+      </div>
+      <div style={{ height: 10, background: C.border, borderRadius: 5, overflow: "hidden" }}>
+        <div style={{ height: "100%", width: `${prog * 100}%`, background: lvl.color, borderRadius: 5, transition: "width .6s ease" }} />
+      </div>
+      {next && <div style={{ color: C.muted, fontSize: "0.72rem", marginTop: 4 }}>{next.minXp - xp} XP to {next.name}</div>}
+    </div>
+  );
+}
+
+// ─── SETUP SCREEN ─────────────────────────────────────────────────────────────
+function SetupScreen({ onComplete }) {
+  const [name, setName] = useState("");
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "80vh", gap: 20 }}>
+      <div style={{ fontSize: "3rem" }}>🎓</div>
+      <div style={{ fontWeight: 800, fontSize: "1.6rem", textAlign: "center" }}>Welcome to<br /><span style={{ color: C.primary }}>English Fluency Academy</span></div>
+      <p style={{ color: C.muted, textAlign: "center", maxWidth: 320 }}>Enter your name to begin your English learning journey.</p>
+      <input
+        value={name} onChange={e => setName(e.target.value)}
+        placeholder="Your name..."
+        style={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 12, padding: "14px 18px", color: C.text, fontFamily: "inherit", fontSize: "1rem", width: 300, outline: "none" }}
+        onKeyDown={e => e.key === "Enter" && name.trim() && onComplete(name.trim())}
+      />
+      <button style={S.btn(C.primary)} onClick={() => name.trim() && onComplete(name.trim())}>Start Learning →</button>
+    </div>
+  );
+}
+
+// ─── HOME TAB ─────────────────────────────────────────────────────────────────
+function HomeTab({ profile, missions, onComplete }) {
+  const lvl = getLevelInfo(profile.xp);
+  const today = todayStr();
+  const todayMissions = missions[today] || {};
+
+  return (
+    <div>
+      {/* Profile Card */}
+      <div style={{ ...S.card, background: `linear-gradient(135deg, ${C.card} 0%, ${C.card2} 100%)` }}>
+        <div style={{ ...S.row, marginBottom: 16 }}>
+          <div style={{ width: 50, height: 50, borderRadius: 50, background: `linear-gradient(135deg, ${lvl.color}40, ${lvl.color}20)`, border: `2px solid ${lvl.color}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.3rem" }}>👤</div>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: "1.05rem" }}>Welcome back, {profile.name}! 👋</div>
+            <div style={{ color: C.muted, fontSize: "0.82rem" }}>Let's practice English today</div>
+          </div>
+        </div>
+        <XPBar xp={profile.xp} />
+        <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
+          <div style={{ flex: 1, background: `${C.primary}15`, border: `1px solid ${C.primary}40`, borderRadius: 12, padding: "10px 14px", textAlign: "center" }}>
+            <div style={{ fontSize: "1.5rem" }}>🔥</div>
+            <div style={{ fontWeight: 800, fontSize: "1.2rem", color: C.primary }}>{profile.streak}</div>
+            <div style={{ color: C.muted, fontSize: "0.72rem" }}>Day Streak</div>
+          </div>
+          <div style={{ flex: 1, background: `${C.accent}15`, border: `1px solid ${C.accent}40`, borderRadius: 12, padding: "10px 14px", textAlign: "center" }}>
+            <div style={{ fontSize: "1.5rem" }}>⭐</div>
+            <div style={{ fontWeight: 800, fontSize: "1.2rem", color: C.accent }}>{profile.xp}</div>
+            <div style={{ color: C.muted, fontSize: "0.72rem" }}>Total XP</div>
+          </div>
+          <div style={{ flex: 1, background: `${C.success}15`, border: `1px solid ${C.success}40`, borderRadius: 12, padding: "10px 14px", textAlign: "center" }}>
+            <div style={{ fontSize: "1.5rem" }}>✅</div>
+            <div style={{ fontWeight: 800, fontSize: "1.2rem", color: C.success }}>{profile.missions}</div>
+            <div style={{ color: C.muted, fontSize: "0.72rem" }}>Missions</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Today's Missions */}
+      <div style={{ fontWeight: 700, fontSize: "0.85rem", color: C.muted, textTransform: "uppercase", letterSpacing: ".06em", marginBottom: 12 }}>Today's Missions</div>
+      {MISSIONS.map(m => {
+        const done = !!todayMissions[m.type];
+        return (
+          <div key={m.type} onClick={() => !done && onComplete(m)} style={{
+            ...S.card, ...S.row, cursor: done ? "default" : "pointer",
+            opacity: done ? 0.65 : 1, borderColor: done ? C.success + "60" : C.border,
+            transition: "transform .15s, border-color .2s", marginBottom: 12,
+          }}
+            onMouseEnter={e => { if (!done) e.currentTarget.style.transform = "translateY(-2px)"; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = ""; }}
+          >
+            <div style={S.missionIcon(done ? C.success : m.color)}>
+              {done ? "✅" : m.icon}
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 700, fontSize: "0.95rem", marginBottom: 3 }}>{m.title}</div>
+              <div style={{ color: C.muted, fontSize: "0.8rem", lineHeight: 1.5, marginBottom: 6 }}>{m.desc}</div>
+              <div style={{ display: "flex", gap: 12 }}>
+                <span style={S.xpTag}>⭐ +{m.xp} XP</span>
+                <span style={{ color: C.muted, fontSize: "0.78rem" }}>⏱ {m.duration} min</span>
+              </div>
+            </div>
+            {!done && <span style={{ color: C.muted, fontSize: "1.1rem" }}>›</span>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── MISSION MODAL ────────────────────────────────────────────────────────────
+function MissionModal({ mission, onClose, onDone }) {
+  const [phase, setPhase] = useState("intro"); // intro | activity | done
+  const [aiMsg, setAiMsg] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [userInput, setUserInput] = useState("");
+  const [chat, setChat] = useState([]);
+  const [vocabIdx, setVocabIdx] = useState(0);
+  const [grammarIdx, setGrammarIdx] = useState(0);
+  const [grammarScore, setGrammarScore] = useState(0);
+  const [grammarPicked, setGrammarPicked] = useState(null);
+  const [topic, setTopic] = useState(TOPICS[0]);
+
+  async function callClaude(prompt) {
+    setLoading(true);
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          messages: [{ role: "user", content: prompt }],
+        }),
+      });
+      const data = await res.json();
+      const text = data.content?.map(b => b.text || "").join("") || "Great job! Keep practicing.";
+      return text;
+    } catch {
+      return "Great effort! Keep practicing your English every day.";
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function startActivity() {
+    setPhase("activity");
+    if (mission.type === "speak" || mission.type === "topic") {
+      const topicLine = mission.type === "topic" ? `The topic is: ${topic}.` : "";
+      const greeting = await callClaude(`You are a friendly English tutor. Start a short spoken English practice session. ${topicLine} Greet the student warmly in 1-2 sentences and ask them a simple conversation-starter question. Keep it encouraging and natural. Max 2 sentences.`);
+      setChat([{ role: "ai", text: greeting }]);
+    }
+  }
+
+  async function sendMessage() {
+    if (!userInput.trim()) return;
+    const newChat = [...chat, { role: "user", text: userInput }];
+    setChat(newChat);
+    setUserInput("");
+    const reply = await callClaude(`You are an encouraging English tutor. The student said: "${userInput}". Give brief positive feedback (1 sentence), then ask a natural follow-up question to keep the conversation going. Max 2 sentences.`);
+    setChat(prev => [...prev, { role: "ai", text: reply }]);
+  }
+
+  const currentWord = VOCABULARY[vocabIdx];
+  const currentQ = GRAMMAR_Qs[grammarIdx];
+
+  function renderActivity() {
+    if (mission.type === "speak" || mission.type === "topic") {
+      return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {mission.type === "topic" && chat.length === 0 && (
+            <div style={{ marginBottom: 8 }}>
+              <div style={{ color: C.muted, fontSize: "0.8rem", marginBottom: 6 }}>Choose a topic:</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {TOPICS.map(t => (
+                  <button key={t} onClick={() => setTopic(t)} style={{ padding: "6px 12px", borderRadius: 8, border: `1px solid ${topic===t ? C.purple : C.border}`, background: topic===t ? C.purple + "25" : "transparent", color: topic===t ? C.purple : C.muted, cursor: "pointer", fontFamily: "inherit", fontSize: "0.78rem" }}>{t}</button>
+                ))}
+              </div>
+            </div>
+          )}
+          <div style={{ background: C.card2, borderRadius: 16, padding: 16, minHeight: 160, maxHeight: 280, overflowY: "auto", display: "flex", flexDirection: "column", gap: 10 }}>
+            {chat.map((m, i) => (
+              <div key={i} style={{ display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start" }}>
+                <div style={{ maxWidth: "80%", background: m.role === "user" ? C.primary : C.border, borderRadius: 12, padding: "8px 12px", fontSize: "0.85rem", lineHeight: 1.5 }}>{m.text}</div>
+              </div>
+            ))}
+            {loading && <div style={{ color: C.muted, fontSize: "0.8rem" }}>AI is typing…</div>}
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <input value={userInput} onChange={e => setUserInput(e.target.value)} onKeyDown={e => e.key === "Enter" && sendMessage()} placeholder="Type your response..." style={{ flex: 1, background: C.card2, border: `1px solid ${C.border}`, borderRadius: 10, padding: "10px 14px", color: C.text, fontFamily: "inherit", fontSize: "0.9rem", outline: "none" }} />
+            <button style={S.btn(C.primary)} onClick={sendMessage}>Send</button>
+          </div>
+          {chat.length >= 6 && <button style={S.btn(C.success, true)} onClick={() => { setPhase("done"); onDone(mission.xp); }}>✅ Complete Mission</button>}
+        </div>
+      );
+    }
+
+    if (mission.type === "vocab") {
+      return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ color: C.muted, fontSize: "0.8rem" }}>Word {vocabIdx + 1} of {VOCABULARY.length}</span>
+            <div style={{ height: 6, width: 180, background: C.border, borderRadius: 3, overflow: "hidden" }}>
+              <div style={{ height: "100%", width: `${((vocabIdx + 1) / VOCABULARY.length) * 100}%`, background: C.blue, borderRadius: 3 }} />
+            </div>
+          </div>
+          <div style={{ background: C.card2, borderRadius: 16, padding: 24, textAlign: "center" }}>
+            <div style={{ fontSize: "1.8rem", fontWeight: 800, color: C.text, marginBottom: 8 }}>{currentWord.word}</div>
+            <div style={{ color: C.blue, fontSize: "0.9rem", marginBottom: 12 }}>{currentWord.meaning}</div>
+            <div style={{ color: C.muted, fontSize: "0.82rem", fontStyle: "italic" }}>"{currentWord.example}"</div>
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            {vocabIdx < VOCABULARY.length - 1
+              ? <button style={{ ...S.btn(C.blue), flex: 1 }} onClick={() => setVocabIdx(v => v + 1)}>Next Word →</button>
+              : <button style={{ ...S.btn(C.success), flex: 1 }} onClick={() => { setPhase("done"); onDone(mission.xp); }}>✅ Complete Mission</button>
+            }
+          </div>
+        </div>
+      );
+    }
+
+    if (mission.type === "grammar") {
+      if (grammarIdx >= GRAMMAR_Qs.length) {
+        return (
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: "2.5rem", marginBottom: 12 }}>🎉</div>
+            <div style={{ fontWeight: 700, fontSize: "1.1rem", marginBottom: 6 }}>Quiz Complete!</div>
+            <div style={{ color: C.muted, marginBottom: 20 }}>Score: {grammarScore} / {GRAMMAR_Qs.length}</div>
+            <button style={S.btn(C.success, true)} onClick={() => { setPhase("done"); onDone(mission.xp); }}>✅ Complete Mission</button>
+          </div>
+        );
+      }
+      return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <span style={{ color: C.muted, fontSize: "0.8rem" }}>Question {grammarIdx + 1} of {GRAMMAR_Qs.length}</span>
+            <span style={{ color: C.success, fontSize: "0.8rem" }}>Score: {grammarScore}</span>
+          </div>
+          <div style={{ background: C.card2, borderRadius: 14, padding: 20, fontWeight: 600, lineHeight: 1.6 }}>{currentQ.q}</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {currentQ.opts.map((opt, i) => {
+              let bg = C.card2, borderColor = C.border;
+              if (grammarPicked !== null) {
+                if (i === currentQ.ans) { bg = C.success + "25"; borderColor = C.success; }
+                else if (i === grammarPicked) { bg = C.error + "25"; borderColor = C.error; }
+              }
+              return (
+                <button key={i} disabled={grammarPicked !== null} onClick={() => {
+                  setGrammarPicked(i);
+                  if (i === currentQ.ans) setGrammarScore(s => s + 1);
+                  setTimeout(() => { setGrammarIdx(idx => idx + 1); setGrammarPicked(null); }, 800);
+                }} style={{ background: bg, border: `1.5px solid ${borderColor}`, borderRadius: 10, padding: "12px 16px", color: C.text, fontFamily: "inherit", fontSize: "0.9rem", cursor: grammarPicked !== null ? "default" : "pointer", textAlign: "left", transition: "all .2s" }}>{opt}</button>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    if (mission.type === "pronunciation") {
+      const twisters = ["She sells seashells by the seashore.", "How much wood would a woodchuck chuck?", "Red lorry, yellow lorry.", "Peter Piper picked a peck of pickled peppers.", "Unique New York, unique New York."];
+      return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, textAlign: "center" }}>
+          <div style={{ color: C.muted, fontSize: "0.85rem" }}>Read each tongue twister aloud 3 times, as fast as you can!</div>
+          {twisters.map((t, i) => (
+            <div key={i} style={{ background: C.card2, borderRadius: 12, padding: "14px 18px", fontWeight: 600, fontSize: "0.95rem", lineHeight: 1.6, borderLeft: `3px solid ${C.pink}` }}>{t}</div>
+          ))}
+          <button style={S.btn(C.success, true)} onClick={() => { setPhase("done"); onDone(mission.xp); }}>✅ I Practiced Them All!</button>
+        </div>
+      );
+    }
+  }
+
+  return (
+    <div style={S.modalOverlay} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={{ ...S.modalBox, textAlign: "left", maxHeight: "85vh", overflowY: "auto" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ ...S.missionIcon(mission.color), width: 44, height: 44, fontSize: "1.2rem" }}>{mission.icon}</div>
+            <div style={{ fontWeight: 700, fontSize: "1rem" }}>{mission.title}</div>
+          </div>
+          <button onClick={onClose} style={{ background: "none", border: "none", color: C.muted, fontSize: "1.3rem", cursor: "pointer" }}>×</button>
+        </div>
+
+        {phase === "intro" && (
+          <div style={{ textAlign: "center" }}>
+            <p style={{ color: C.muted, marginBottom: 24, lineHeight: 1.7 }}>{mission.desc}</p>
+            <div style={{ ...S.xpTag, justifyContent: "center", fontSize: "1.1rem", marginBottom: 24 }}>⭐ +{mission.xp} XP · ⏱ {mission.duration} min</div>
+            <button style={S.btn(mission.color, true)} onClick={startActivity}>Start Mission</button>
+          </div>
+        )}
+        {phase === "activity" && renderActivity()}
+        {phase === "done" && (
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: "3rem", marginBottom: 12 }}>🎉</div>
+            <div style={{ fontWeight: 800, fontSize: "1.3rem", color: C.accent, marginBottom: 8 }}>Mission Complete!</div>
+            <div style={{ background: `${C.accent}20`, border: `1px solid ${C.accent}40`, borderRadius: 12, padding: "12px 20px", display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 20, fontSize: "1.4rem", fontWeight: 800, color: C.accent }}>⭐ +{mission.xp} XP</div>
+            <button style={S.btn(C.primary, true)} onClick={onClose}>Awesome! 🚀</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── PROGRESS TAB ─────────────────────────────────────────────────────────────
+function ProgressTab({ profile }) {
+  return (
+    <div>
+      <div style={S.card}>
+        <div style={{ fontWeight: 700, marginBottom: 16, fontSize: "1.05rem" }}>Your Level Progress</div>
+        <XPBar xp={profile.xp} />
+      </div>
+      <div style={{ fontWeight: 700, fontSize: "0.85rem", color: C.muted, textTransform: "uppercase", letterSpacing: ".06em", marginBottom: 12 }}>All Levels</div>
+      {LEVELS.map(l => {
+        const prog = profile.xp >= l.maxXp ? 100 : profile.xp >= l.minXp ? ((profile.xp - l.minXp) / (l.maxXp - l.minXp)) * 100 : 0;
+        const current = getLevelInfo(profile.xp).level === l.level;
+        return (
+          <div key={l.level} style={{ ...S.card, borderColor: current ? l.color + "80" : C.border, marginBottom: 10 }}>
+            <div style={{ ...S.row, marginBottom: current ? 10 : 0 }}>
+              <div style={{ width: 38, height: 38, borderRadius: 10, background: l.color + "20", border: `2px solid ${l.color}`, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "0.8rem", color: l.color }}>L{l.level}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700, fontSize: "0.9rem" }}>{l.name} {current && "← you are here"}</div>
+                <div style={{ color: C.muted, fontSize: "0.78rem" }}>{l.minXp} – {l.maxXp} XP</div>
+              </div>
+              {profile.xp >= l.maxXp && <span style={{ color: C.success, fontSize: "1.1rem" }}>✅</span>}
+            </div>
+            {current && <div style={{ height: 8, background: C.border, borderRadius: 4, overflow: "hidden" }}><div style={{ height: "100%", width: `${prog}%`, background: l.color, borderRadius: 4, transition: "width .6s" }} /></div>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── BADGES TAB ───────────────────────────────────────────────────────────────
+function BadgesTab({ profile }) {
+  return (
+    <div>
+      <div style={S.card}>
+        <div style={{ fontWeight: 700, marginBottom: 4 }}>Your Achievements</div>
+        <div style={{ color: C.muted, fontSize: "0.85rem" }}>{BADGES.filter(b => checkBadge(b, profile)).length} / {BADGES.length} badges earned</div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+        {BADGES.map(b => {
+          const earned = checkBadge(b, profile);
+          return (
+            <div key={b.type} style={{ background: C.card, borderRadius: 16, padding: 14, display: "flex", flexDirection: "column", alignItems: "center", gap: 8, border: `1.5px solid ${earned ? b.color + "60" : C.border}`, textAlign: "center" }}>
+              <div style={{ width: 52, height: 52, borderRadius: 26, background: earned ? b.color + "20" : C.border + "40", border: `2px solid ${earned ? b.color : C.border}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem", filter: earned ? "none" : "grayscale(1) opacity(.35)" }}>{b.icon}</div>
+              <div style={{ fontWeight: 700, fontSize: "0.78rem", color: earned ? C.text : C.muted, lineHeight: 1.3 }}>{b.name}</div>
+              <div style={{ color: C.muted, fontSize: "0.7rem", lineHeight: 1.3 }}>{b.desc}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── MAIN APP ─────────────────────────────────────────────────────────────────
+export default function App() {
+  const [profile, setProfile] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("efa_profile") || "null"); } catch { return null; }
+  });
+  const [missions, setMissions] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("efa_missions") || "{}"); } catch { return {}; }
+  });
+  const [tab, setTab] = useState("home");
+  const [activeMission, setActiveMission] = useState(null);
+  const [completeModal, setCompleteModal] = useState(null);
+
+  useEffect(() => {
+    if (profile) localStorage.setItem("efa_profile", JSON.stringify(profile));
+  }, [profile]);
+  useEffect(() => {
+    localStorage.setItem("efa_missions", JSON.stringify(missions));
+  }, [missions]);
+
+  function handleSetup(name) {
+    setProfile({ name, xp: 0, streak: 0, last_active: todayStr(), missions: 0, conversations: 0, speaking_minutes: 0 });
+  }
+
+  function handleMissionDone(xpEarned) {
+    const m = activeMission;
+    const today = todayStr();
+    setMissions(prev => ({ ...prev, [today]: { ...(prev[today] || {}), [m.type]: true } }));
+    setProfile(p => {
+      const newXp = p.xp + xpEarned;
+      const newMissions = p.missions + 1;
+      const isNewDay = p.last_active !== today;
+      const newStreak = isNewDay ? p.streak + 1 : p.streak;
+      return { ...p, xp: newXp, missions: newMissions, streak: newStreak, last_active: today };
+    });
+  }
+
+  if (!profile) return (
+    <div style={S.app}>
+      <header style={S.header}>
+        <div style={S.logo}><div style={S.logoIcon}>🎓</div>English Fluency Academy</div>
+      </header>
+      <div style={{ ...S.main }}><SetupScreen onComplete={handleSetup} /></div>
+    </div>
+  );
+
+  const today = todayStr();
+  const todayDone = Object.keys(missions[today] || {}).length;
+  const tabs = [
+    { id: "home", label: "🏠 Home" },
+    { id: "progress", label: "📊 Progress" },
+    { id: "badges", label: "🏆 Badges" },
+  ];
+
+  return (
+    <div style={S.app}>
+      <header style={S.header}>
+        <div style={S.logo}><div style={S.logoIcon}>🎓</div>English Fluency Academy</div>
+        <div style={{ color: C.muted, fontSize: "0.82rem" }}>{todayDone}/{MISSIONS.length} today</div>
+      </header>
+
+      <div style={{ ...S.main, paddingTop: 12 }}>
+        <div style={S.tabs}>
+          {tabs.map(t => <button key={t.id} style={S.tab(tab === t.id)} onClick={() => setTab(t.id)}>{t.label}</button>)}
+        </div>
+        {tab === "home" && <HomeTab profile={profile} missions={missions} onComplete={setActiveMission} />}
+        {tab === "progress" && <ProgressTab profile={profile} />}
+        {tab === "badges" && <BadgesTab profile={profile} />}
+      </div>
+
+      {activeMission && (
+        <MissionModal
+          mission={activeMission}
+          onClose={() => setActiveMission(null)}
+          onDone={(xp) => { handleMissionDone(xp); }}
+        />
+      )}
+    </div>
+  );
+}

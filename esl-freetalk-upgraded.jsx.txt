@@ -1,0 +1,980 @@
+
+import { useState, useEffect, useRef } from "react";
+
+// ─── DATA ──────────────────────────────────────────────────────────────────────
+const TOPICS = [
+  {
+    id: 1, title: "Family & Relationships", icon: "👨‍👩‍👧‍👦", gradient: "g1", category: "Personal",
+    skills: ["Speaking", "Vocabulary", "Listening"],
+    preview: "Explore family structures, roles, and how relationships shape who we are.",
+    time: "15–20 min",
+    questions: [
+      "How many people are in your family? Who are they?",
+      "What do you like most about your family?",
+      "Do you have any brothers or sisters? What are they like?",
+      "How often do you spend time with your extended family?",
+      "What is one tradition your family has?",
+      "Who in your family are you most similar to?",
+      "How do families in Egypt differ from families in Western countries?",
+      "What makes a family strong and happy?",
+    ],
+    vocab: [
+      { word: "Nuclear family", type: "noun", meaning: "Parents and children only" },
+      { word: "Extended family", type: "noun", meaning: "Includes grandparents, aunts, uncles" },
+      { word: "Sibling", type: "noun", meaning: "Brother or sister" },
+      { word: "Generation", type: "noun", meaning: "People born in the same era" },
+      { word: "Bond", type: "noun", meaning: "A strong connection between people" },
+    ],
+    roleplay: {
+      scenario: "You are meeting your new friend's family for the first time.",
+      roles: [
+        { name: "Student A", desc: "You are the student introducing your friend to your family. Ask questions and make them feel welcome." },
+        { name: "Student B", desc: "You are the new friend. Be polite and ask about the family." },
+      ],
+    },
+    teacherTips: ["Ask students to bring a family photo", "Compare Egyptian vs. global family norms", "Use genogram as a visual aid"],
+  },
+  {
+    id: 2, title: "Travel & Adventure", icon: "✈️", gradient: "g2", category: "World",
+    skills: ["Speaking", "Debate", "Vocabulary"],
+    preview: "From dream destinations to cultural surprises — travel opens minds.",
+    time: "20–25 min",
+    questions: [
+      "What is your dream travel destination and why?",
+      "Have you ever traveled outside Egypt? Tell us about it.",
+      "What do you always pack when you travel?",
+      "Would you prefer a beach vacation or a city trip?",
+      "What is the strangest food you've ever eaten while traveling?",
+      "How do you think travel changes a person?",
+      "Is it better to travel alone or with friends/family?",
+      "What is one place in Egypt that every tourist must visit?",
+    ],
+    vocab: [
+      { word: "Itinerary", type: "noun", meaning: "A planned travel schedule" },
+      { word: "Souvenir", type: "noun", meaning: "A gift bought to remember a place" },
+      { word: "Jet lag", type: "noun", meaning: "Tiredness from crossing time zones" },
+      { word: "Adventurous", type: "adj", meaning: "Willing to try new things" },
+      { word: "Landmark", type: "noun", meaning: "Famous place or building" },
+    ],
+    roleplay: {
+      scenario: "You are at Cairo airport. One of you is a traveler, the other is a tourist guide.",
+      roles: [
+        { name: "Tourist", desc: "You just arrived in Egypt. Ask for recommendations on what to see and where to eat." },
+        { name: "Guide", desc: "Help the tourist plan their 3-day trip. Recommend places and give safety tips." },
+      ],
+    },
+    teacherTips: ["Show a world map and point to countries", "Ask students to plan a 'dream trip' budget", "Discuss cultural differences"],
+  },
+  {
+    id: 3, title: "Technology & Social Media", icon: "📱", gradient: "g3", category: "Modern Life",
+    skills: ["Debate", "Speaking", "Vocabulary"],
+    preview: "Screens, apps, and algorithms — technology is reshaping daily life.",
+    time: "20–30 min",
+    questions: [
+      "How many hours a day do you spend on your phone?",
+      "Which social media platform do you use most? Why?",
+      "Do you think social media makes people more or less happy?",
+      "What is one app you cannot live without?",
+      "Is it okay to use your phone during dinner with family?",
+      "How has technology changed education in your opinion?",
+      "What are the dangers of sharing too much online?",
+      "Do you think AI will replace teachers in the future?",
+    ],
+    vocab: [
+      { word: "Algorithm", type: "noun", meaning: "Rules a computer uses to make decisions" },
+      { word: "Viral", type: "adj", meaning: "Spreading rapidly online" },
+      { word: "Influencer", type: "noun", meaning: "Person with large online following" },
+      { word: "Digital detox", type: "noun", meaning: "Time away from screens" },
+      { word: "Cyberbullying", type: "noun", meaning: "Bullying that happens online" },
+    ],
+    roleplay: {
+      scenario: "A parent and teenager are arguing about screen time rules at home.",
+      roles: [
+        { name: "Parent", desc: "You think your child spends too much time on their phone. Set some rules and explain why." },
+        { name: "Teenager", desc: "Defend your phone use. Explain how it helps with school, friends, and creativity." },
+      ],
+    },
+    teacherTips: ["Poll the class on favorite apps", "Show a chart of global social media users", "Debate: phones in school yes or no?"],
+  },
+  {
+    id: 4, title: "Food & Cooking", icon: "🍽️", gradient: "g4", category: "Culture",
+    skills: ["Speaking", "Vocabulary", "Roleplay"],
+    preview: "Food is culture. Explore flavors, recipes, and dining habits.",
+    time: "15–20 min",
+    questions: [
+      "What is your favorite Egyptian dish and how is it made?",
+      "Can you cook? What do you make best?",
+      "Do you prefer eating at home or at a restaurant?",
+      "Have you ever tried food from another country?",
+      "What food do you absolutely hate? Why?",
+      "How important is food in Egyptian culture?",
+      "Would you ever try to become a chef? Why or why not?",
+      "What do you usually eat for breakfast, lunch, and dinner?",
+    ],
+    vocab: [
+      { word: "Cuisine", type: "noun", meaning: "A style or method of cooking" },
+      { word: "Ingredient", type: "noun", meaning: "An item used in cooking" },
+      { word: "Appetite", type: "noun", meaning: "Desire to eat" },
+      { word: "Recipe", type: "noun", meaning: "Instructions for making a dish" },
+      { word: "Savory", type: "adj", meaning: "Having a strong, pleasant, non-sweet taste" },
+    ],
+    roleplay: {
+      scenario: "You are at a restaurant. One person is the customer, one is the waiter.",
+      roles: [
+        { name: "Customer", desc: "Order food, ask about ingredients, and complain politely about something." },
+        { name: "Waiter", desc: "Take the order, explain the menu, and handle the complaint professionally." },
+      ],
+    },
+    teacherTips: ["Bring a menu for practice", "Ask students to describe their favorite meal", "Do a 'blind taste test' with common spices"],
+  },
+  {
+    id: 5, title: "Dreams & Goals", icon: "🌟", gradient: "g5", category: "Personal",
+    skills: ["Speaking", "Vocabulary", "Listening"],
+    preview: "Aspirations, ambitions, and the road to making dreams real.",
+    time: "20–25 min",
+    questions: [
+      "What is your biggest dream in life?",
+      "Where do you see yourself in 10 years?",
+      "What career do you want and why?",
+      "Have you ever given up on a goal? What happened?",
+      "Who is your biggest role model and what can you learn from them?",
+      "What skills do you want to learn in the next year?",
+      "Is it more important to have money or to love your job?",
+      "How do you stay motivated when things are difficult?",
+    ],
+    vocab: [
+      { word: "Aspiration", type: "noun", meaning: "A strong desire or goal" },
+      { word: "Ambition", type: "noun", meaning: "The drive to achieve something" },
+      { word: "Perseverance", type: "noun", meaning: "Continuing despite difficulty" },
+      { word: "Milestone", type: "noun", meaning: "An important achievement or event" },
+      { word: "Resilience", type: "noun", meaning: "The ability to recover from setbacks" },
+    ],
+    roleplay: {
+      scenario: "You are in a job interview for your dream job.",
+      roles: [
+        { name: "Interviewer", desc: "Ask about experience, goals, and why the candidate wants this job. Ask at least 4 questions." },
+        { name: "Candidate", desc: "Answer confidently. Use vocabulary from today's lesson in your answers." },
+      ],
+    },
+    teacherTips: ["Use a vision board activity", "Ask students to write a 5-year plan", "Discuss how language helps achieve goals"],
+  },
+  {
+    id: 6, title: "Health & Fitness", icon: "💪", gradient: "g1", category: "Lifestyle",
+    skills: ["Speaking", "Debate", "Vocabulary"],
+    preview: "Mind and body — healthy habits, sports, and wellness culture.",
+    time: "15–20 min",
+    questions: [
+      "Do you exercise regularly? What do you do?",
+      "What do you do to stay healthy?",
+      "How important is mental health compared to physical health?",
+      "What is one bad habit you want to break?",
+      "Do you think gyms are worth the money?",
+      "What sports do you play or watch?",
+      "How does diet affect your energy and mood?",
+      "What advice would you give someone who wants to get fit?",
+    ],
+    vocab: [
+      { word: "Stamina", type: "noun", meaning: "The ability to sustain effort for long periods" },
+      { word: "Nutrition", type: "noun", meaning: "The process of eating right for health" },
+      { word: "Sedentary", type: "adj", meaning: "Having little or no physical activity" },
+      { word: "Wellness", type: "noun", meaning: "The state of being in good health" },
+      { word: "Hydration", type: "noun", meaning: "Maintaining proper water levels in the body" },
+    ],
+    roleplay: {
+      scenario: "A doctor and patient discussing a new healthy lifestyle plan.",
+      roles: [
+        { name: "Doctor", desc: "Give advice about diet, sleep, and exercise. Ask about the patient's current habits." },
+        { name: "Patient", desc: "Describe your current lifestyle and ask questions about how to improve it." },
+      ],
+    },
+    teacherTips: ["Have students track what they eat for one day", "Debate: gym vs. outdoor exercise", "Discuss mental health stigma"],
+  },
+  {
+    id: 7, title: "Environment & Nature", icon: "🌍", gradient: "g2", category: "World",
+    skills: ["Debate", "Vocabulary", "Speaking"],
+    preview: "Climate, sustainability, and humanity's relationship with nature.",
+    time: "20–30 min",
+    questions: [
+      "How do you help protect the environment in your daily life?",
+      "What is the biggest environmental problem in Egypt?",
+      "Do you think climate change is a serious threat? Why?",
+      "Would you pay more for eco-friendly products?",
+      "What animals are endangered and what can we do to help?",
+      "Should plastic bags be banned completely?",
+      "How can schools teach students to be more eco-friendly?",
+      "What would you do if you were president and had to solve pollution?",
+    ],
+    vocab: [
+      { word: "Sustainability", type: "noun", meaning: "Using resources without harming the future" },
+      { word: "Carbon footprint", type: "noun", meaning: "The amount of CO₂ one produces" },
+      { word: "Biodiversity", type: "noun", meaning: "The variety of life in an area" },
+      { word: "Renewable", type: "adj", meaning: "Energy that can be replaced naturally" },
+      { word: "Deforestation", type: "noun", meaning: "Removing forests to use the land" },
+    ],
+    roleplay: {
+      scenario: "An environmental activist debates a factory owner about pollution.",
+      roles: [
+        { name: "Activist", desc: "Argue that the factory must reduce pollution. Use facts and emotional appeals." },
+        { name: "Factory Owner", desc: "Defend your business while showing some willingness to compromise." },
+      ],
+    },
+    teacherTips: ["Show photos of pollution in Egypt", "Do a carbon footprint quiz", "Have students design a 'green school'"],
+  },
+  {
+    id: 8, title: "Education & Learning", icon: "📚", gradient: "g3", category: "Modern Life",
+    skills: ["Speaking", "Debate", "Vocabulary"],
+    preview: "Schools, study habits, and the future of education.",
+    time: "20–25 min",
+    questions: [
+      "What was your favorite subject at school and why?",
+      "Do you think the Egyptian school system is effective?",
+      "Is university education necessary for success?",
+      "How do you learn best — by listening, reading, or doing?",
+      "What would your ideal school look like?",
+      "Should students be allowed to use phones in class?",
+      "What is the most important skill schools should teach?",
+      "How has online learning changed education?",
+    ],
+    vocab: [
+      { word: "Curriculum", type: "noun", meaning: "The subjects taught in a school program" },
+      { word: "Critical thinking", type: "noun", meaning: "Analysing information objectively" },
+      { word: "Literacy", type: "noun", meaning: "The ability to read and write well" },
+      { word: "Assessment", type: "noun", meaning: "A test or evaluation of skills" },
+      { word: "Self-directed", type: "adj", meaning: "Learning without being told what to do" },
+    ],
+    roleplay: {
+      scenario: "A student and teacher discuss the student's poor grades.",
+      roles: [
+        { name: "Teacher", desc: "Express concern and ask questions. Offer support and solutions." },
+        { name: "Student", desc: "Explain the challenges you're facing. Ask for help and suggest your own solutions." },
+      ],
+    },
+    teacherTips: ["Ask about learning styles", "Compare international education systems", "Debate homework — useful or not?"],
+  },
+];
+
+const GRADIENTS = {
+  g1: "linear-gradient(135deg,#667eea 0%,#764ba2 100%)",
+  g2: "linear-gradient(135deg,#f093fb 0%,#f5576c 100%)",
+  g3: "linear-gradient(135deg,#4facfe 0%,#00f2fe 100%)",
+  g4: "linear-gradient(135deg,#43e97b 0%,#38f9d7 100%)",
+  g5: "linear-gradient(135deg,#fa709a 0%,#fee140 100%)",
+};
+
+const CATEGORIES = ["All", "Personal", "World", "Modern Life", "Culture", "Lifestyle"];
+
+// ─── OFFLINE HTML (the original artifact) ─────────────────────────────────────
+const OFFLINE_HTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>100 ESL Free Talk Topics – Offline</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#6366f1;--secondary:#f59e0b;--dark:#1e293b;--body-bg:#f1f5f9;--gradient-1:linear-gradient(135deg,#667eea 0%,#764ba2 100%);}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Poppins',sans-serif;background:var(--body-bg);color:var(--dark)}
+.header{background:var(--gradient-1);color:white;padding:2.5rem 2rem;text-align:center}
+.header h1{font-size:2rem;font-weight:800;margin-bottom:.5rem}
+.header p{opacity:.9;font-size:1rem}
+.container{max-width:1200px;margin:0 auto;padding:2rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
+.card{background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.1)}
+.card-top{padding:1.2rem 1.4rem;color:white;background:var(--gradient-1)}
+.card-top h3{font-size:1.1rem;font-weight:700}
+.card-body{padding:1.2rem 1.4rem}
+.card-body p{color:#64748b;font-size:.88rem;line-height:1.6}
+.badge{display:inline-block;padding:.25rem .6rem;border-radius:50px;font-size:.7rem;font-weight:600;background:#dbeafe;color:#1e40af;margin:.2rem}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🎓 100 ESL Free Talk Topics</h1>
+  <p>By Mr. Saleh Mohamed — English Fluency Academy</p>
+</div>
+<div class="container">
+  <div class="grid" id="topicGrid"></div>
+</div>
+<script>
+const topics=[
+  {t:"Family & Relationships",e:"👨‍👩‍👧‍👦",p:"Explore family structures, roles, and how relationships shape who we are.",s:["Speaking","Vocabulary","Listening"]},
+  {t:"Travel & Adventure",e:"✈️",p:"From dream destinations to cultural surprises — travel opens minds.",s:["Speaking","Debate","Vocabulary"]},
+  {t:"Technology & Social Media",e:"📱",p:"Screens and algorithms — technology is reshaping daily life.",s:["Debate","Speaking","Vocabulary"]},
+  {t:"Food & Cooking",e:"🍽️",p:"Food is culture. Explore flavors, recipes, and dining habits.",s:["Speaking","Vocabulary","Roleplay"]},
+  {t:"Dreams & Goals",e:"🌟",p:"Aspirations, ambitions, and the road to making dreams real.",s:["Speaking","Vocabulary","Listening"]},
+  {t:"Health & Fitness",e:"💪",p:"Mind and body — healthy habits, sports, and wellness culture.",s:["Speaking","Debate","Vocabulary"]},
+  {t:"Environment & Nature",e:"🌍",p:"Climate, sustainability, and our relationship with nature.",s:["Debate","Vocabulary","Speaking"]},
+  {t:"Education & Learning",e:"📚",p:"Schools, study habits, and the future of education.",s:["Speaking","Debate","Vocabulary"]},
+];
+const g=document.getElementById('topicGrid');
+topics.forEach((tp,i)=>{
+  g.innerHTML+=\`<div class="card">
+    <div class="card-top" style="background:linear-gradient(135deg,hsl(\${i*45},70%,55%) 0%,hsl(\${i*45+40},70%,45%) 100%)">
+      <div style="font-size:2rem;margin-bottom:.4rem">\${tp.e}</div>
+      <h3>\${tp.t}</h3>
+    </div>
+    <div class="card-body">
+      <p>\${tp.p}</p>
+      <div style="margin-top:.75rem">\${tp.s.map(s=>\`<span class="badge">\${s}</span>\`).join('')}</div>
+    </div>
+  </div>\`;
+});
+<\/script>
+</body>
+</html>`;
+
+// ─── AI CONVERSATION ───────────────────────────────────────────────────────────
+async function callClaude(messages, systemPrompt) {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages,
+    }),
+  });
+  const data = await res.json();
+  return data.content?.[0]?.text || "Sorry, I couldn't respond right now.";
+}
+
+// ─── COMPONENTS ───────────────────────────────────────────────────────────────
+function ParticleField() {
+  return (
+    <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
+      {[...Array(18)].map((_, i) => (
+        <div key={i} style={{
+          position: "absolute",
+          borderRadius: "50%",
+          background: `hsl(${i * 20 + 200},70%,70%)`,
+          opacity: 0.06 + (i % 3) * 0.02,
+          width: `${60 + (i % 5) * 40}px`,
+          height: `${60 + (i % 5) * 40}px`,
+          left: `${(i * 17) % 100}%`,
+          top: `${(i * 23) % 100}%`,
+          animation: `drift${i % 3} ${14 + i * 1.5}s ease-in-out infinite`,
+          animationDelay: `${i * 0.7}s`,
+        }} />
+      ))}
+      <style>{`
+        @keyframes drift0{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-40px) scale(1.15)}}
+        @keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-25px,35px) scale(0.9)}}
+        @keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(20px,20px) scale(1.05)}}
+      `}</style>
+    </div>
+  );
+}
+
+function StatBadge({ icon, label }) {
+  return (
+    <div style={{
+      background: "rgba(255,255,255,0.15)", backdropFilter: "blur(10px)",
+      padding: "0.55rem 1.1rem", borderRadius: 50,
+      display: "flex", alignItems: "center", gap: 8,
+      fontWeight: 700, fontSize: "0.85rem",
+    }}>
+      <span>{icon}</span><span>{label}</span>
+    </div>
+  );
+}
+
+function SkillPill({ skill }) {
+  const colors = {
+    Speaking: { bg: "#dbeafe", color: "#1e40af" },
+    Listening: { bg: "#dcfce7", color: "#166534" },
+    Vocabulary: { bg: "#fef3c7", color: "#92400e" },
+    Debate: { bg: "#fce7f3", color: "#9d174d" },
+    Roleplay: { bg: "#e0e7ff", color: "#3730a3" },
+  };
+  const c = colors[skill] || { bg: "#f1f5f9", color: "#475569" };
+  return (
+    <span style={{
+      padding: "3px 10px", borderRadius: 50, fontSize: "0.68rem",
+      fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5,
+      background: c.bg, color: c.color,
+    }}>{skill}</span>
+  );
+}
+
+function TopicCard({ topic, onClick }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      onClick={() => onClick(topic)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: "white", borderRadius: 20, overflow: "hidden",
+        boxShadow: hovered ? "0 20px 40px rgba(0,0,0,0.15)" : "0 4px 16px rgba(0,0,0,0.08)",
+        transform: hovered ? "translateY(-8px) scale(1.02)" : "none",
+        transition: "all 0.35s cubic-bezier(0.175,0.885,0.32,1.275)",
+        cursor: "pointer", position: "relative",
+      }}
+    >
+      <div style={{
+        background: GRADIENTS[topic.gradient], padding: "1.4rem 1.5rem",
+        position: "relative", overflow: "hidden",
+      }}>
+        <div style={{
+          position: "absolute", top: "-30px", right: "-20px",
+          fontSize: "5rem", opacity: 0.15, transform: hovered ? "scale(1.2) rotate(10deg)" : "none",
+          transition: "transform 0.4s ease",
+        }}>{topic.icon}</div>
+        <div style={{ fontSize: "0.72rem", fontWeight: 600, color: "rgba(255,255,255,0.75)", textTransform: "uppercase", letterSpacing: 1 }}>
+          Topic #{topic.id} · {topic.category}
+        </div>
+        <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "white", marginTop: 4 }}>{topic.title}</div>
+        <div style={{ fontSize: "2.2rem", marginTop: 6 }}>{topic.icon}</div>
+      </div>
+      <div style={{ padding: "1.1rem 1.4rem" }}>
+        <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 8 }}>
+          {topic.skills.map(s => <SkillPill key={s} skill={s} />)}
+        </div>
+        <p style={{ color: "#64748b", fontSize: "0.83rem", lineHeight: 1.6 }}>{topic.preview}</p>
+      </div>
+      <div style={{
+        padding: "0.85rem 1.4rem", borderTop: "1px solid #e2e8f0",
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+      }}>
+        <span style={{ color: "#94a3b8", fontSize: "0.78rem" }}>⏱ {topic.time}</span>
+        <button style={{
+          padding: "0.45rem 1.1rem", background: GRADIENTS[topic.gradient],
+          color: "white", border: "none", borderRadius: 50,
+          fontWeight: 700, fontSize: "0.78rem", cursor: "pointer",
+          fontFamily: "inherit",
+          transform: hovered ? "scale(1.08)" : "none",
+          transition: "transform 0.2s ease",
+        }}>Open →</button>
+      </div>
+    </div>
+  );
+}
+
+function Timer() {
+  const [secs, setSecs] = useState(10 * 60);
+  const [running, setRunning] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    if (running) { ref.current = setInterval(() => setSecs(s => Math.max(0, s - 1)), 1000); }
+    else clearInterval(ref.current);
+    return () => clearInterval(ref.current);
+  }, [running]);
+  const m = String(Math.floor(secs / 60)).padStart(2, "0");
+  const s = String(secs % 60).padStart(2, "0");
+  const pct = (secs / 600) * 100;
+  return (
+    <div style={{ background: "#0f172a", borderRadius: 16, padding: "1.25rem", marginBottom: "1.5rem", textAlign: "center" }}>
+      <div style={{
+        fontSize: "2.6rem", fontWeight: 800, color: secs < 60 ? "#ef4444" : "#38bdf8",
+        fontVariantNumeric: "tabular-nums", letterSpacing: 3,
+        transition: "color 0.3s",
+      }}>{m}:{s}</div>
+      <div style={{ background: "#1e293b", borderRadius: 50, height: 6, margin: "0.75rem 0", overflow: "hidden" }}>
+        <div style={{
+          height: "100%", borderRadius: 50, transition: "width 1s linear",
+          width: `${pct}%`,
+          background: secs < 60 ? "#ef4444" : "linear-gradient(90deg,#38bdf8,#818cf8)",
+        }} />
+      </div>
+      <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: "0.6rem" }}>
+        {[
+          { label: "▶ Start", fn: () => setRunning(true), bg: "#10b981" },
+          { label: "⏸ Pause", fn: () => setRunning(false), bg: "#f59e0b" },
+          { label: "↺ Reset", fn: () => { setRunning(false); setSecs(600); }, bg: "#ef4444" },
+          { label: "5 min", fn: () => { setRunning(false); setSecs(300); }, bg: "#6366f1" },
+        ].map(({ label, fn, bg }) => (
+          <button key={label} onClick={fn} style={{
+            padding: "0.4rem 0.9rem", border: "none", borderRadius: 50,
+            background: bg, color: "white", fontWeight: 700, fontSize: "0.75rem",
+            cursor: "pointer", fontFamily: "inherit",
+          }}>{label}</button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function RandomQuestion({ questions, gradient }) {
+  const [idx, setIdx] = useState(0);
+  const [animating, setAnimating] = useState(false);
+  const next = () => {
+    setAnimating(true);
+    setTimeout(() => { setIdx(Math.floor(Math.random() * questions.length)); setAnimating(false); }, 300);
+  };
+  return (
+    <div style={{ background: gradient, borderRadius: 18, padding: "1.5rem", textAlign: "center", marginBottom: "1.5rem", position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "absolute", top: -20, left: 16, fontSize: "6rem", opacity: 0.1, fontFamily: "Georgia,serif", color: "white" }}>"</div>
+      <p style={{
+        color: "white", fontWeight: 700, fontSize: "1.05rem", lineHeight: 1.6,
+        minHeight: 52, transition: "opacity 0.3s", opacity: animating ? 0 : 1,
+        position: "relative",
+      }}>{questions[idx]}</p>
+      <button onClick={next} style={{
+        marginTop: "1rem", padding: "0.6rem 1.6rem", background: "white",
+        border: "none", borderRadius: 50, fontWeight: 800, fontSize: "0.85rem",
+        cursor: "pointer", fontFamily: "inherit",
+        color: "#6366f1", boxShadow: "0 4px 14px rgba(0,0,0,0.2)",
+      }}>🎲 Next Question</button>
+    </div>
+  );
+}
+
+function AIChat({ topic }) {
+  const [msgs, setMsgs] = useState([]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const bottomRef = useRef(null);
+  const system = `You are an ESL conversation partner helping a student practice English.
+The topic is "${topic.title}". Keep responses encouraging, 2–3 sentences max.
+Correct any grammar errors gently. Ask a follow-up question. Be warm and friendly.`;
+
+  const send = async () => {
+    if (!input.trim() || loading) return;
+    const newMsgs = [...msgs, { role: "user", content: input }];
+    setMsgs(newMsgs); setInput(""); setLoading(true);
+    const reply = await callClaude(newMsgs, system);
+    setMsgs([...newMsgs, { role: "assistant", content: reply }]);
+    setLoading(false);
+  };
+
+  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [msgs, loading]);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ background: "#f8fafc", borderRadius: 16, padding: "1rem", minHeight: 220, maxHeight: 300, overflowY: "auto" }}>
+        {msgs.length === 0 && (
+          <div style={{ color: "#94a3b8", fontSize: "0.85rem", textAlign: "center", paddingTop: 60 }}>
+            👋 Start speaking about <strong>{topic.title}</strong>!<br />Type anything to begin.
+          </div>
+        )}
+        {msgs.map((m, i) => (
+          <div key={i} style={{ display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start", marginBottom: 8 }}>
+            {m.role === "assistant" && (
+              <span style={{ marginRight: 6, fontSize: "1.3rem" }}>🤖</span>
+            )}
+            <div style={{
+              padding: "0.65rem 1rem", borderRadius: 14, maxWidth: "78%", fontSize: "0.88rem", lineHeight: 1.55,
+              background: m.role === "user" ? GRADIENTS[topic.gradient] : "white",
+              color: m.role === "user" ? "white" : "#1e293b",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+            }}>{m.content}</div>
+          </div>
+        ))}
+        {loading && (
+          <div style={{ display: "flex", gap: 6, padding: "0.5rem" }}>
+            {[0,1,2].map(i => (
+              <div key={i} style={{
+                width: 8, height: 8, borderRadius: "50%", background: "#6366f1",
+                animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite`,
+              }} />
+            ))}
+          </div>
+        )}
+        <div ref={bottomRef} />
+      </div>
+      <div style={{ display: "flex", gap: 8 }}>
+        <input
+          value={input} onChange={e => setInput(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && send()}
+          placeholder="Type your answer or question…"
+          style={{
+            flex: 1, padding: "0.7rem 1rem", borderRadius: 12,
+            border: "2px solid #e2e8f0", fontFamily: "inherit", fontSize: "0.88rem",
+            outline: "none",
+          }}
+        />
+        <button onClick={send} disabled={loading} style={{
+          padding: "0.7rem 1.2rem", background: GRADIENTS[topic.gradient],
+          border: "none", borderRadius: 12, color: "white",
+          fontWeight: 700, cursor: "pointer", fontFamily: "inherit",
+          opacity: loading ? 0.6 : 1,
+        }}>Send</button>
+      </div>
+      <style>{`@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}`}</style>
+    </div>
+  );
+}
+
+function TopicModal({ topic, onClose }) {
+  const [tab, setTab] = useState("questions");
+  if (!topic) return null;
+  const tabs = [
+    { id: "questions", label: "💬 Questions" },
+    { id: "vocab", label: "📖 Vocabulary" },
+    { id: "roleplay", label: "🎭 Roleplay" },
+    { id: "timer", label: "⏱ Timer" },
+    { id: "ai", label: "🤖 AI Practice" },
+    { id: "tips", label: "👩‍🏫 Tips" },
+  ];
+  return (
+    <div onClick={onClose} style={{
+      position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)",
+      backdropFilter: "blur(6px)", zIndex: 1000,
+      display: "flex", alignItems: "center", justifyContent: "center", padding: 16,
+    }}>
+      <div onClick={e => e.stopPropagation()} style={{
+        background: "white", borderRadius: 24, width: "100%", maxWidth: 860,
+        maxHeight: "92vh", overflow: "hidden", display: "flex", flexDirection: "column",
+        boxShadow: "0 24px 60px rgba(0,0,0,0.3)",
+        animation: "popIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275) forwards",
+      }}>
+        <div style={{ background: GRADIENTS[topic.gradient], padding: "1.4rem 1.8rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <div style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.75rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: 1 }}>
+              Topic #{topic.id} · {topic.category}
+            </div>
+            <div style={{ color: "white", fontSize: "1.4rem", fontWeight: 800, marginTop: 2 }}>
+              {topic.icon} {topic.title}
+            </div>
+          </div>
+          <button onClick={onClose} style={{
+            background: "rgba(255,255,255,0.2)", border: "none", color: "white",
+            width: 38, height: 38, borderRadius: "50%", cursor: "pointer",
+            fontSize: "1.1rem", display: "flex", alignItems: "center", justifyContent: "center",
+          }}>✕</button>
+        </div>
+
+        <div style={{ display: "flex", gap: 6, padding: "1rem 1.5rem 0", flexWrap: "wrap", borderBottom: "2px solid #e2e8f0", paddingBottom: "1rem" }}>
+          {tabs.map(t => (
+            <button key={t.id} onClick={() => setTab(t.id)} style={{
+              padding: "0.5rem 1rem", border: "2px solid", borderRadius: 12,
+              fontFamily: "inherit", fontWeight: 700, cursor: "pointer", fontSize: "0.8rem",
+              borderColor: tab === t.id ? "transparent" : "#e2e8f0",
+              background: tab === t.id ? GRADIENTS[topic.gradient] : "white",
+              color: tab === t.id ? "white" : "#64748b",
+              transition: "all 0.2s",
+            }}>{t.label}</button>
+          ))}
+        </div>
+
+        <div style={{ padding: "1.5rem", overflowY: "auto", flex: 1 }}>
+          {tab === "questions" && (
+            <div>
+              <RandomQuestion questions={topic.questions} gradient={GRADIENTS[topic.gradient]} />
+              <div style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "1rem", display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ color: "#6366f1" }}>💬</span> All Discussion Questions
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {topic.questions.map((q, i) => (
+                  <div key={i} style={{
+                    background: "#f8fafc", borderRadius: 14, padding: "0.95rem 1.2rem",
+                    borderLeft: `4px solid`,
+                    borderImage: `${GRADIENTS[topic.gradient]} 1`,
+                    display: "flex", alignItems: "flex-start", gap: 10,
+                  }}>
+                    <span style={{
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                      width: 24, height: 24, borderRadius: "50%",
+                      background: GRADIENTS[topic.gradient], color: "white",
+                      fontSize: "0.7rem", fontWeight: 700, flexShrink: 0,
+                    }}>{i + 1}</span>
+                    <span style={{ fontSize: "0.9rem", fontWeight: 500, color: "#1e293b" }}>{q}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {tab === "vocab" && (
+            <div>
+              <div style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "1rem" }}>
+                <span style={{ color: "#6366f1" }}>📖</span> Key Vocabulary
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))", gap: "1rem" }}>
+                {topic.vocab.map((v, i) => (
+                  <div key={i} style={{
+                    background: Object.values(GRADIENTS)[i % 5],
+                    color: "white", padding: "1.2rem", borderRadius: 16, textAlign: "center",
+                    cursor: "pointer", transition: "transform 0.2s",
+                  }}
+                    onMouseEnter={e => e.currentTarget.style.transform = "translateY(-5px) rotate(2deg)"}
+                    onMouseLeave={e => e.currentTarget.style.transform = "none"}
+                  >
+                    <div style={{ fontWeight: 800, fontSize: "1rem", marginBottom: 3 }}>{v.word}</div>
+                    <div style={{ fontSize: "0.68rem", opacity: 0.8, textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>{v.type}</div>
+                    <div style={{ fontSize: "0.78rem", opacity: 0.95, lineHeight: 1.4 }}>{v.meaning}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {tab === "roleplay" && (
+            <div>
+              <div style={{ background: GRADIENTS[topic.gradient], color: "white", padding: "1.2rem", borderRadius: 16, marginBottom: "1.2rem" }}>
+                <div style={{ fontWeight: 700, marginBottom: 6, display: "flex", alignItems: "center", gap: 6 }}>🎭 Scenario</div>
+                <p style={{ fontSize: "0.9rem", lineHeight: 1.6, opacity: 0.97 }}>{topic.roleplay.scenario}</p>
+              </div>
+              {topic.roleplay.roles.map((r, i) => (
+                <div key={i} style={{
+                  background: "white", border: "2px solid #e2e8f0", borderRadius: 14,
+                  padding: "1.2rem", marginBottom: "0.75rem",
+                  transition: "border-color 0.2s, transform 0.2s",
+                }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = "#6366f1"; e.currentTarget.style.transform = "translateY(-3px)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#e2e8f0"; e.currentTarget.style.transform = "none"; }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                    <div style={{
+                      width: 40, height: 40, borderRadius: "50%",
+                      background: i === 0 ? GRADIENTS.g1 : GRADIENTS.g2,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      color: "white", fontWeight: 800, fontSize: "1rem",
+                    }}>{i === 0 ? "A" : "B"}</div>
+                    <span style={{ fontWeight: 700, fontSize: "1rem" }}>{r.name}</span>
+                  </div>
+                  <p style={{ color: "#475569", fontSize: "0.87rem", lineHeight: 1.55 }}>{r.desc}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {tab === "timer" && <Timer />}
+
+          {tab === "ai" && (
+            <div>
+              <div style={{ background: "#f1f5f9", borderRadius: 14, padding: "1rem", marginBottom: "1rem", fontSize: "0.83rem", color: "#475569", lineHeight: 1.5 }}>
+                🤖 <strong>AI Conversation Partner</strong> — Practice speaking about <em>{topic.title}</em>. The AI will respond, gently correct errors, and ask follow-up questions.
+              </div>
+              <AIChat topic={topic} />
+            </div>
+          )}
+
+          {tab === "tips" && (
+            <div style={{ background: "#fef3c7", borderLeft: "4px solid #f59e0b", padding: "1.25rem", borderRadius: "0 14px 14px 0" }}>
+              <div style={{ color: "#92400e", fontWeight: 700, marginBottom: "0.75rem", display: "flex", alignItems: "center", gap: 6 }}>
+                👩‍🏫 Teacher Tips for: {topic.title}
+              </div>
+              <ul style={{ listStyle: "none", padding: 0 }}>
+                {topic.teacherTips.map((tip, i) => (
+                  <li key={i} style={{ padding: "0.4rem 0", color: "#78350f", display: "flex", alignItems: "flex-start", gap: 8, fontSize: "0.9rem" }}>
+                    <span style={{ color: "#f59e0b", fontWeight: 700, flexShrink: 0 }}>✓</span>{tip}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+      <style>{`@keyframes popIn{from{transform:scale(0.85);opacity:0}to{transform:scale(1);opacity:1}}`}</style>
+    </div>
+  );
+}
+
+function OfflineSection() {
+  const download = () => {
+    const blob = new Blob([OFFLINE_HTML], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "esl-freetalk-topics-offline.html";
+    a.click(); URL.revokeObjectURL(url);
+  };
+  return (
+    <div style={{ maxWidth: 860, margin: "0 auto" }}>
+      <div style={{
+        background: "linear-gradient(135deg,#0f172a 0%,#1e293b 100%)",
+        borderRadius: 24, padding: "2.5rem", color: "white", marginBottom: "2rem",
+        position: "relative", overflow: "hidden",
+      }}>
+        <div style={{ position: "absolute", top: -40, right: -40, width: 200, height: 200, borderRadius: "50%", background: "#6366f1", opacity: 0.08 }} />
+        <div style={{ position: "absolute", bottom: -30, left: -30, width: 150, height: 150, borderRadius: "50%", background: "#ec4899", opacity: 0.08 }} />
+        <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>📥</div>
+        <h2 style={{ fontSize: "1.6rem", fontWeight: 800, marginBottom: "0.5rem" }}>Offline Version</h2>
+        <p style={{ color: "#94a3b8", lineHeight: 1.7, maxWidth: 520, marginBottom: "1.5rem" }}>
+          Download the original standalone HTML file — works completely offline with no internet needed.
+          Perfect for classroom use where Wi-Fi is unavailable. Contains all 8 starter topics in a
+          clean, fast-loading single file.
+        </p>
+        <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginBottom: "1.5rem" }}>
+          {["✅ No internet required", "✅ Single HTML file", "✅ Works on any device", "✅ Print-friendly"].map(f => (
+            <span key={f} style={{ background: "rgba(99,102,241,0.2)", border: "1px solid rgba(99,102,241,0.4)", padding: "0.4rem 0.9rem", borderRadius: 50, fontSize: "0.8rem", fontWeight: 600 }}>{f}</span>
+          ))}
+        </div>
+        <button onClick={download} style={{
+          padding: "0.85rem 2rem", background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
+          border: "none", borderRadius: 12, color: "white",
+          fontWeight: 800, fontSize: "1rem", cursor: "pointer",
+          fontFamily: "inherit", boxShadow: "0 4px 20px rgba(99,102,241,0.4)",
+          transition: "transform 0.2s, box-shadow 0.2s",
+        }}
+          onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(99,102,241,0.5)"; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(99,102,241,0.4)"; }}
+        >⬇ Download Offline HTML</button>
+      </div>
+
+      <div style={{ background: "white", borderRadius: 20, padding: "2rem", boxShadow: "0 4px 16px rgba(0,0,0,0.08)" }}>
+        <h3 style={{ fontWeight: 800, marginBottom: "1rem", color: "#1e293b" }}>📋 Preview of Offline Content</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))", gap: "1rem" }}>
+          {TOPICS.slice(0, 8).map((t, i) => (
+            <div key={t.id} style={{
+              background: "#f8fafc", borderRadius: 14, padding: "1rem", overflow: "hidden",
+              borderTop: "4px solid transparent",
+              borderImage: `${Object.values(GRADIENTS)[i % 5]} 1`,
+            }}>
+              <div style={{ fontSize: "1.5rem", marginBottom: 4 }}>{t.icon}</div>
+              <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "#1e293b", marginBottom: 4 }}>{t.title}</div>
+              <div style={{ fontSize: "0.75rem", color: "#64748b" }}>{t.skills.slice(0, 2).join(" · ")}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── MAIN APP ─────────────────────────────────────────────────────────────────
+export default function App() {
+  const [section, setSection] = useState("topics");
+  const [category, setCategory] = useState("All");
+  const [search, setSearch] = useState("");
+  const [activeTopic, setActiveTopic] = useState(null);
+  const [completed, setCompleted] = useState(new Set());
+
+  const filtered = TOPICS.filter(t =>
+    (category === "All" || t.category === category) &&
+    (t.title.toLowerCase().includes(search.toLowerCase()) || t.category.toLowerCase().includes(search.toLowerCase()))
+  );
+
+  const handleTopicOpen = (t) => {
+    setActiveTopic(t);
+    setCompleted(prev => new Set([...prev, t.id]));
+  };
+
+  return (
+    <div style={{ fontFamily: "'Poppins', sans-serif", minHeight: "100vh", background: "#f1f5f9", position: "relative" }}>
+      <ParticleField />
+
+      {/* HEADER */}
+      <div style={{
+        background: "linear-gradient(135deg,#667eea 0%,#764ba2 100%)",
+        color: "white", padding: "2.5rem 2rem", textAlign: "center", position: "relative", overflow: "hidden",
+      }}>
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M20 20v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z'/%3E%3C/g%3E%3C/svg%3E\")" }} />
+        <div style={{ position: "relative" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "rgba(255,255,255,0.15)", backdropFilter: "blur(10px)", padding: "0.4rem 1rem", borderRadius: 50, fontSize: "0.8rem", fontWeight: 700, marginBottom: "1rem" }}>
+            🎓 English Fluency Academy · Mr. Saleh Mohamed
+          </div>
+          <h1 style={{ fontSize: "clamp(1.8rem,5vw,2.8rem)", fontWeight: 900, marginBottom: "0.5rem", textShadow: "2px 2px 8px rgba(0,0,0,0.2)" }}>
+            ESL Free Talk Topics
+          </h1>
+          <p style={{ opacity: 0.9, fontSize: "1rem" }}>Interactive classroom toolkit for English fluency</p>
+          <div style={{ display: "flex", justifyContent: "center", gap: "0.75rem", marginTop: "1.25rem", flexWrap: "wrap" }}>
+            <StatBadge icon="📚" label={`${TOPICS.length} Topics`} />
+            <StatBadge icon="🎭" label="Roleplay Scenes" />
+            <StatBadge icon="🤖" label="AI Practice" />
+            <StatBadge icon="⏱" label="Built-in Timer" />
+            <StatBadge icon="✅" label={`${completed.size} Completed`} />
+          </div>
+        </div>
+      </div>
+
+      {/* NAV */}
+      <div style={{
+        background: "white", padding: "0.75rem 1.5rem",
+        display: "flex", justifyContent: "center", gap: 8, flexWrap: "wrap",
+        boxShadow: "0 2px 12px rgba(0,0,0,0.08)", position: "sticky", top: 0, zIndex: 100,
+      }}>
+        {[
+          { id: "topics", label: "🗂 Topics" },
+          { id: "offline", label: "📥 Offline Version" },
+        ].map(n => (
+          <button key={n.id} onClick={() => setSection(n.id)} style={{
+            padding: "0.5rem 1.2rem", border: "2px solid", borderRadius: 50,
+            fontFamily: "inherit", fontWeight: 700, cursor: "pointer", fontSize: "0.85rem",
+            borderColor: section === n.id ? "transparent" : "#e2e8f0",
+            background: section === n.id ? "linear-gradient(135deg,#667eea,#764ba2)" : "#f8fafc",
+            color: section === n.id ? "white" : "#475569",
+            transition: "all 0.2s",
+            transform: section === n.id ? "translateY(-1px)" : "none",
+          }}>{n.label}</button>
+        ))}
+      </div>
+
+      <div style={{ maxWidth: 1400, margin: "0 auto", padding: "2rem 1.5rem", position: "relative", zIndex: 1 }}>
+
+        {section === "topics" && (
+          <div>
+            {/* SEARCH + FILTER */}
+            <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginBottom: "2rem", alignItems: "center" }}>
+              <div style={{ position: "relative", flex: "1 1 260px", maxWidth: 400 }}>
+                <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: "1rem" }}>🔍</span>
+                <input
+                  value={search} onChange={e => setSearch(e.target.value)}
+                  placeholder="Search topics…"
+                  style={{
+                    width: "100%", padding: "0.7rem 1rem 0.7rem 2.6rem",
+                    border: "2px solid #e2e8f0", borderRadius: 12,
+                    fontFamily: "inherit", fontSize: "0.88rem", outline: "none",
+                    transition: "border-color 0.2s",
+                  }}
+                  onFocus={e => e.target.style.borderColor = "#6366f1"}
+                  onBlur={e => e.target.style.borderColor = "#e2e8f0"}
+                />
+              </div>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                {CATEGORIES.map(c => (
+                  <button key={c} onClick={() => setCategory(c)} style={{
+                    padding: "0.5rem 1rem", border: "2px solid", borderRadius: 50,
+                    fontFamily: "inherit", fontWeight: 700, cursor: "pointer", fontSize: "0.78rem",
+                    borderColor: category === c ? "transparent" : "#e2e8f0",
+                    background: category === c ? "linear-gradient(135deg,#667eea,#764ba2)" : "white",
+                    color: category === c ? "white" : "#64748b",
+                    transition: "all 0.2s",
+                  }}>{c}</button>
+                ))}
+              </div>
+            </div>
+
+            {/* PROGRESS BAR */}
+            <div style={{ background: "white", borderRadius: 14, padding: "1rem 1.4rem", boxShadow: "0 2px 10px rgba(0,0,0,0.06)", marginBottom: "2rem", display: "flex", alignItems: "center", gap: "1rem" }}>
+              <span style={{ fontSize: "2rem" }}>🏆</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, fontSize: "0.85rem", marginBottom: 6 }}>
+                  <span>Your Progress</span>
+                  <span style={{ color: "#6366f1" }}>{completed.size} / {TOPICS.length} topics explored</span>
+                </div>
+                <div style={{ background: "#e2e8f0", borderRadius: 50, height: 10, overflow: "hidden" }}>
+                  <div style={{
+                    height: "100%", borderRadius: 50, transition: "width 0.6s ease",
+                    width: `${(completed.size / TOPICS.length) * 100}%`,
+                    background: "linear-gradient(90deg,#43e97b,#38f9d7)",
+                  }} />
+                </div>
+              </div>
+            </div>
+
+            {/* GRID */}
+            {filtered.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "4rem", color: "#94a3b8" }}>
+                <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🔍</div>
+                <p style={{ fontWeight: 700 }}>No topics found for "{search}"</p>
+              </div>
+            ) : (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(290px,1fr))", gap: "1.5rem" }}>
+                {filtered.map(t => (
+                  <div key={t.id} style={{ position: "relative" }}>
+                    {completed.has(t.id) && (
+                      <div style={{
+                        position: "absolute", top: 12, right: 12, zIndex: 10,
+                        background: "#10b981", color: "white", borderRadius: "50%",
+                        width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: "0.9rem", fontWeight: 800, boxShadow: "0 2px 8px rgba(16,185,129,0.4)",
+                      }}>✓</div>
+                    )}
+                    <TopicCard topic={t} onClick={handleTopicOpen} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {section === "offline" && <OfflineSection />}
+      </div>
+
+      {activeTopic && <TopicModal topic={activeTopic} onClose={() => setActiveTopic(null)} />}
+    </div>
+  );
+}

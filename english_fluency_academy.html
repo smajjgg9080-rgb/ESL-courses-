@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Fluency Academy – Mr. Saleh Mohamed</title>
+<meta name="description" content="English Fluency Academy – Expert ESL courses for adults and children led by Mr. Saleh Mohamed. Free trial class available. Call +201151176393">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#F5C842;--gold2:#E8A020;--deep:#050D1A;--navy:#0B1F3A;
+  --blue:#1A56DB;--cyan:#06C5D0;--green:#10D4A0;--coral:#FF5F57;
+  --cream:#FDFAF4;--wa:#25D366;--wa2:#128C7E;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--deep);color:#fff;overflow-x:hidden}
+
+/* ─── TICKER ─── */
+.ticker{background:linear-gradient(90deg,var(--gold2),var(--gold));padding:9px 0;overflow:hidden;position:relative;z-index:300}
+.ticker-track{display:flex;animation:tick 30s linear infinite;white-space:nowrap}
+.ticker-track span{font-size:12px;font-weight:700;letter-spacing:2px;color:#050D1A;padding:0 40px;text-transform:uppercase}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ─── NAV ─── */
+nav{position:fixed;top:38px;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:14px 48px;background:rgba(5,13,26,.88);backdrop-filter:blur(20px);border-bottom:1px solid rgba(245,200,66,.1);transition:top .3s}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:800;color:#fff;text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo-pill{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#050D1A;font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:1.5px;text-transform:uppercase}
+.nav-links{display:flex;gap:28px}
+.nav-links a{color:rgba(255,255,255,.6);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s;padding:4px 0;border-bottom:2px solid transparent}
+.nav-links a:hover{color:var(--gold);border-bottom-color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-wa{display:flex;align-items:center;gap:7px;background:var(--wa);color:#fff;font-weight:700;font-size:13px;padding:9px 18px;border-radius:100px;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 18px rgba(37,211,102,.3)}
+.nav-wa:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,211,102,.5)}
+.nav-cta{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#050D1A;font-weight:700;font-size:13px;padding:9px 22px;border-radius:100px;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 18px rgba(245,200,66,.25)}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(245,200,66,.45)}
+@media(max-width:900px){.nav-links{display:none}}
+@media(max-width:600px){nav{padding:12px 18px}.nav-wa span{display:none}}
+
+/* ─── HERO ─── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:130px 24px 100px;text-align:center}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(26,86,219,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(26,86,219,.05) 1px,transparent 1px);background-size:60px 60px;z-index:0}
+.globe-wrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:680px;height:680px;pointer-events:none;z-index:0;opacity:.16}
+.globe{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(6,197,208,.5),transparent 60%),radial-gradient(circle at 65% 65%,rgba(26,86,219,.6),transparent 60%);border:1.5px solid rgba(6,197,208,.3);animation:gSpin 20s linear infinite}
+.globe::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px dashed rgba(245,200,66,.2);animation:gSpin 30s linear infinite reverse}
+.globe::after{content:'';position:absolute;inset:60px;border-radius:50%;border:1px solid rgba(6,197,208,.15);animation:gSpin 15s linear infinite}
+.gring{position:absolute;top:50%;left:50%;width:730px;height:730px;transform:translate(-50%,-50%) rotateX(75deg);border-radius:50%;border:2px solid rgba(245,200,66,.12);animation:gSpin 25s linear infinite}
+@keyframes gSpin{from{transform:translate(-50%,-50%) rotateY(0)}to{transform:translate(-50%,-50%) rotateY(360deg)}}
+.particles{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.pt{position:absolute;border-radius:50%;animation:ptFloat linear infinite}
+@keyframes ptFloat{0%{transform:translateY(110vh);opacity:0}10%{opacity:1}90%{opacity:.5}100%{transform:translateY(-10vh);opacity:0}}
+
+/* Floating cards */
+.float-cards{position:absolute;inset:0;pointer-events:none;z-index:1}
+.fc{position:absolute;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(8px);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;animation:fcFloat ease-in-out infinite}
+@keyframes fcFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-16px) rotate(1deg)}}
+.fc-icon{font-size:22px}.fc-t{font-size:12px;font-weight:600;color:rgba(255,255,255,.85)}.fc-s{font-size:10px;color:rgba(255,255,255,.4)}
+.fc1{top:22%;left:3%;animation-duration:7s}
+.fc2{top:32%;right:3%;animation-duration:9s;animation-delay:1s}
+.fc3{bottom:30%;left:5%;animation-duration:8s;animation-delay:2s}
+.fc4{bottom:24%;right:5%;animation-duration:6s;animation-delay:.5s}
+@media(max-width:900px){.float-cards{display:none}}
+
+.hero-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.3);color:var(--gold);font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:7px 20px;border-radius:100px;margin-bottom:26px;animation:fadeUp .8s ease both}
+.hero-eyebrow::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;animation:blink 1.5s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,10vw,112px);font-weight:800;line-height:.9;letter-spacing:-2px;animation:fadeUp .8s .1s ease both}
+.ht-1{color:#fff;display:block}
+.ht-2{display:block;background:linear-gradient(135deg,var(--gold),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ht-3{color:rgba(255,255,255,.22);font-size:.52em;display:block;letter-spacing:3px;margin-top:10px}
+.hero-sub{font-size:clamp(15px,2vw,19px);color:rgba(255,255,255,.6);max-width:560px;line-height:1.7;margin-top:26px;font-weight:300;animation:fadeUp .8s .22s ease both}
+.hero-sub strong{color:var(--gold);font-weight:600}
+.hero-btns{display:flex;gap:12px;margin-top:40px;flex-wrap:wrap;justify-content:center;animation:fadeUp .8s .34s ease both}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#050D1A;font-weight:700;font-size:15px;padding:15px 34px;border-radius:100px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 8px 28px rgba(245,200,66,.3);transition:transform .2s,box-shadow .2s}
+.btn-gold:hover{transform:translateY(-3px);box-shadow:0 16px 44px rgba(245,200,66,.5)}
+.btn-wa{background:var(--wa);color:#fff;font-weight:700;font-size:15px;padding:15px 34px;border-radius:100px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 8px 28px rgba(37,211,102,.25);transition:transform .2s,box-shadow .2s}
+.btn-wa:hover{transform:translateY(-3px);box-shadow:0 16px 44px rgba(37,211,102,.45)}
+.btn-outline{background:transparent;color:#fff;font-weight:600;font-size:15px;padding:15px 34px;border-radius:100px;border:1.5px solid rgba(255,255,255,.22);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.hero-stats{display:flex;gap:0;margin-top:60px;animation:fadeUp .8s .48s ease both;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:18px;overflow:hidden;backdrop-filter:blur(10px)}
+.hs{padding:20px 32px;text-align:center;border-right:1px solid rgba(255,255,255,.06);flex:1}
+.hs:last-child{border-right:none}
+.hs-n{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hs-l{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
+@media(max-width:600px){.hero-stats{flex-wrap:wrap;width:92%}.hs{min-width:50%;border-bottom:1px solid rgba(255,255,255,.06)}}
+.scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;z-index:5;animation:hintBob 2s ease-in-out infinite}
+.sh-txt{font-size:9px;color:rgba(255,255,255,.3);letter-spacing:2px;text-transform:uppercase}
+.sh-arr{width:16px;height:16px;border-right:2px solid rgba(255,255,255,.22);border-bottom:2px solid rgba(255,255,255,.22);transform:rotate(45deg)}
+@keyframes hintBob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── GENERIC SECTION LAYOUT ─── */
+.section{padding:96px 24px}
+.inner{max-width:1120px;margin:0 auto}
+.s-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:6px 16px;border-radius:100px;margin-bottom:14px}
+.tag-gold{background:rgba(245,200,66,.1);color:var(--gold);border:1px solid rgba(245,200,66,.22)}
+.tag-cyan{background:rgba(6,197,208,.1);color:var(--cyan);border:1px solid rgba(6,197,208,.22)}
+.tag-coral{background:rgba(255,95,87,.1);color:var(--coral);border:1px solid rgba(255,95,87,.22)}
+.tag-green{background:rgba(16,212,160,.1);color:var(--green);border:1px solid rgba(16,212,160,.22)}
+.s-title{font-family:'Cormorant Garamond',serif;font-size:clamp(34px,6vw,64px);font-weight:800;line-height:1;letter-spacing:-1px}
+.s-desc{font-size:16px;color:rgba(255,255,255,.55);line-height:1.75;max-width:520px;margin-top:14px;font-weight:300}
+.gold-w{background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cyan-w{background:linear-gradient(135deg,var(--cyan),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* scroll reveal */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .65s ease,transform .65s ease}
+.reveal.on{opacity:1;transform:translateY(0)}
+
+/* ─── ABOUT ─── */
+.about-sec{background:var(--navy);position:relative;overflow:hidden}
+.about-glow{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(245,200,66,.06),transparent 70%);top:-150px;right:-150px;pointer-events:none}
+.about-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:80px;align-items:center}
+@media(max-width:820px){.about-grid,.kids-grid,.adults-grid{grid-template-columns:1fr}.av-right{order:-1}}
+.portrait-wrap{display:flex;justify-content:center;position:relative}
+.portrait-3d{width:300px;height:370px;position:relative;transform-style:preserve-3d;animation:pTilt 8s ease-in-out infinite}
+@keyframes pTilt{0%,100%{transform:perspective(800px) rotateY(-6deg) rotateX(3deg)}50%{transform:perspective(800px) rotateY(6deg) rotateX(-3deg)}}
+.p-bg{position:absolute;inset:0;border-radius:26px;background:linear-gradient(145deg,var(--blue),var(--cyan));box-shadow:0 36px 72px rgba(6,197,208,.22),inset 0 0 50px rgba(255,255,255,.04)}
+.p-inner{position:absolute;inset:10px;border-radius:20px;overflow:hidden;background:linear-gradient(145deg,#0d2240,#1a56db);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:22px}
+.p-avatar{width:150px;height:150px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:60px;margin-bottom:14px;box-shadow:0 10px 36px rgba(245,200,66,.35);animation:avPulse 3s ease-in-out infinite}
+@keyframes avPulse{0%,100%{box-shadow:0 10px 36px rgba(245,200,66,.35)}50%{box-shadow:0 18px 54px rgba(245,200,66,.65)}}
+.p-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:800;color:#fff;text-align:center}
+.p-role{font-size:11px;color:rgba(255,255,255,.45);letter-spacing:2px;text-transform:uppercase;text-align:center;margin-top:3px}
+.p-badge{position:absolute;top:-12px;right:-14px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:14px;padding:9px 14px;box-shadow:0 6px 20px rgba(245,200,66,.35)}
+.pb-n{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:800;color:#050D1A;display:block;line-height:1}
+.pb-t{font-size:9px;font-weight:700;color:#050D1A;letter-spacing:1px;text-transform:uppercase}
+.p-glow{position:absolute;inset:-30px;background:radial-gradient(circle,rgba(6,197,208,.12),transparent 70%);pointer-events:none}
+.about-bio{font-size:15px;color:rgba(255,255,255,.62);line-height:1.8;margin-bottom:28px}
+.creds{display:flex;flex-direction:column;gap:10px}
+.cred{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:12px 16px;transition:background .2s,transform .2s;text-decoration:none;color:inherit}
+.cred:hover{background:rgba(245,200,66,.07);transform:translateX(5px)}
+.cred-icon{font-size:22px;flex-shrink:0}
+.cred-txt{font-size:13px;color:rgba(255,255,255,.7);font-weight:500}
+
+/* ─── KIDS ─── */
+.kids-sec{background:var(--deep);position:relative;overflow:hidden}
+.kids-sec::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--coral),var(--gold))}
+.kids-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:70px;align-items:center}
+.age-pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:5px 14px;border-radius:100px;margin-bottom:10px}
+.ap-kids{background:rgba(245,200,66,.1);color:var(--gold);border:1px solid rgba(245,200,66,.22)}
+.ap-adults{background:rgba(6,197,208,.1);color:var(--cyan);border:1px solid rgba(6,197,208,.22)}
+.feats{display:flex;flex-direction:column;gap:12px;margin-top:26px}
+.feat{display:flex;gap:13px;align-items:flex-start;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px 18px;transition:all .22s;position:relative;overflow:hidden}
+.feat::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--gold),var(--gold2))}
+.feat:hover{background:rgba(245,200,66,.06);transform:translateX(4px)}
+.feat-icon{font-size:24px;flex-shrink:0}
+.feat-ttl{font-weight:600;font-size:14px;color:#fff;margin-bottom:3px}
+.feat-dsc{font-size:12px;color:rgba(255,255,255,.47);line-height:1.5}
+
+/* 3D card stack */
+.card-stack{position:relative;width:320px;height:360px;perspective:900px;margin:0 auto}
+.sc{position:absolute;width:275px;height:230px;border-radius:20px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.4)}
+.sc-inner{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:18px}
+.sc1{top:0;left:0;background:linear-gradient(135deg,#1a3a6e,#0b2140);animation:s1 6s ease-in-out infinite}
+.sc2{top:36px;left:36px;background:linear-gradient(135deg,#0f2d5c,#1a56db);animation:s2 6s ease-in-out infinite}
+.sc3{top:72px;left:72px;background:linear-gradient(135deg,#06C5D0,#1A56DB);animation:s3 6s ease-in-out infinite}
+@keyframes s1{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(-2deg) translateY(-7px)}}
+@keyframes s2{0%,100%{transform:rotate(2deg)}50%{transform:rotate(0deg) translateY(-12px)}}
+@keyframes s3{0%,100%{transform:rotate(5deg)}50%{transform:rotate(2deg) translateY(-17px)}}
+.sc-emoji{font-size:50px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.3))}
+.sc-ttl{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:800;color:#fff;text-align:center}
+.sc-sub{font-size:11px;color:rgba(255,255,255,.5);text-align:center}
+
+/* ─── ADULTS ─── */
+.adults-sec{background:linear-gradient(180deg,var(--navy) 0%,var(--deep) 100%);position:relative;overflow:hidden}
+.adults-sec::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--green),var(--cyan))}
+.adults-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:70px;align-items:center}
+.box3d-wrap{width:300px;height:300px;perspective:700px;margin:0 auto}
+.box3d{width:260px;height:260px;position:relative;transform-style:preserve-3d;animation:bSpin 12s ease-in-out infinite;margin:20px auto}
+@keyframes bSpin{0%{transform:rotateX(15deg) rotateY(0)}50%{transform:rotateX(-5deg) rotateY(180deg)}100%{transform:rotateX(15deg) rotateY(360deg)}}
+.bf{position:absolute;width:260px;height:260px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;border:1px solid rgba(6,197,208,.3);font-family:'Cormorant Garamond',serif;font-weight:800;color:#fff;text-align:center;padding:18px}
+.bf-front{transform:translateZ(130px);background:linear-gradient(135deg,rgba(26,86,219,.6),rgba(6,197,208,.3))}
+.bf-back{transform:rotateY(180deg) translateZ(130px);background:linear-gradient(135deg,rgba(6,197,208,.3),rgba(16,212,160,.4))}
+.bf-right{transform:rotateY(90deg) translateZ(130px);background:linear-gradient(135deg,rgba(10,20,50,.8),rgba(26,86,219,.4))}
+.bf-left{transform:rotateY(-90deg) translateZ(130px);background:linear-gradient(135deg,rgba(10,20,50,.8),rgba(16,212,160,.3))}
+.bf-top{transform:rotateX(90deg) translateZ(130px);background:linear-gradient(135deg,rgba(245,200,66,.2),rgba(26,86,219,.3))}
+.bf-bot{transform:rotateX(-90deg) translateZ(130px);background:rgba(5,13,26,.5)}
+.bf .bi{font-size:44px;margin-bottom:6px}
+.bf .bt{font-size:18px;color:#fff}
+.bf .bs{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:1px;text-transform:uppercase}
+
+/* ─── ACADEMY NUMBERS ─── */
+.nums-sec{background:var(--deep);padding:96px 24px}
+.nums-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:18px;margin-top:56px}
+.num-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:28px 20px;text-align:center;transition:all .3s;animation:numFloat ease-in-out infinite;cursor:default}
+@keyframes numFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.num-card:nth-child(2){animation-delay:.4s}.num-card:nth-child(3){animation-delay:.8s}.num-card:nth-child(4){animation-delay:1.2s}.num-card:nth-child(5){animation-delay:1.6s}
+.num-card:hover{background:rgba(245,200,66,.07);border-color:rgba(245,200,66,.25);transform:scale(1.06) translateY(-6px)}
+.ni{font-size:42px;margin-bottom:12px;display:block;filter:drop-shadow(0 4px 10px rgba(245,200,66,.25))}
+.nn{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block}
+.nl{font-size:11px;color:rgba(255,255,255,.38);letter-spacing:1px;text-transform:uppercase;margin-top:4px}
+
+/* ─── WHY ─── */
+.why-sec{background:var(--navy);padding:96px 24px}
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px;margin-top:56px}
+.why-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:28px 22px;text-align:center;transition:all .28s;cursor:default}
+.why-card:hover{background:rgba(245,200,66,.07);border-color:rgba(245,200,66,.22);transform:translateY(-8px);box-shadow:0 20px 48px rgba(0,0,0,.3)}
+.wi{font-size:44px;margin-bottom:14px;display:block;filter:drop-shadow(0 4px 10px rgba(245,200,66,.2))}
+.wt{font-weight:700;font-size:14px;color:#fff;margin-bottom:7px}
+.wd{font-size:12px;color:rgba(255,255,255,.43);line-height:1.6}
+
+/* ─── ENGLISH STORIES ─── */
+.stories-sec{background:var(--deep);padding:96px 24px;position:relative;overflow:hidden}
+.stories-sec::after{content:'SUCCESS';position:absolute;font-family:'Cormorant Garamond',serif;font-size:200px;font-weight:800;color:rgba(255,255,255,.015);top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none}
+.reviews-tabs{display:flex;gap:0;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:100px;overflow:hidden;width:fit-content;margin:30px 0 50px}
+.rtab{font-size:13px;font-weight:600;padding:10px 24px;cursor:pointer;transition:all .2s;background:transparent;color:rgba(255,255,255,.5);border:none}
+.rtab.active{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#050D1A}
+.reviews-panel{display:none}.reviews-panel.active{display:grid}
+.en-grid{grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:24px}
+.ar-grid{grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:24px}
+.story-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:22px;padding:30px;position:relative;overflow:hidden;transition:all .3s;transform-style:preserve-3d}
+.story-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(245,200,66,.04),transparent 60%);opacity:0;transition:opacity .3s}
+.story-card:hover{transform:translateY(-9px) perspective(600px) rotateX(2deg);border-color:rgba(245,200,66,.18);box-shadow:0 28px 56px rgba(0,0,0,.35)}
+.story-card:hover::before{opacity:1}
+.sq{font-family:'Cormorant Garamond',serif;font-size:90px;color:var(--gold);opacity:.14;position:absolute;top:-14px;left:18px;line-height:1;font-weight:800;pointer-events:none}
+.sflag{font-size:26px;margin-bottom:12px}
+.sstars{color:var(--gold);font-size:13px;letter-spacing:2px;margin-bottom:10px}
+.stxt{font-size:14px;color:rgba(255,255,255,.7);line-height:1.75;margin-bottom:22px;position:relative;z-index:1}
+/* Arabic story text */
+.stxt-ar{font-family:'Tajawal',sans-serif;font-size:15px;color:rgba(255,255,255,.78);line-height:1.9;direction:rtl;text-align:right;margin-bottom:22px;position:relative;z-index:1}
+.smeta{display:flex;align-items:center;gap:13px}
+.sav{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0;color:var(--deep)}
+.av1{background:linear-gradient(135deg,var(--gold),var(--gold2))}
+.av2{background:linear-gradient(135deg,var(--cyan),var(--green))}
+.av3{background:linear-gradient(135deg,var(--coral),#ff9a56)}
+.av4{background:linear-gradient(135deg,var(--green),var(--cyan))}
+.av5{background:linear-gradient(135deg,#9b59b6,#6c3483)}
+.av6{background:linear-gradient(135deg,var(--blue),var(--cyan))}
+.sname{font-weight:700;font-size:14px;color:#fff}
+.srole{font-size:11px;color:rgba(255,255,255,.38);margin-top:2px}
+.sname-ar{font-family:'Tajawal',sans-serif;font-weight:800;font-size:14px;color:#fff;direction:rtl}
+.srole-ar{font-family:'Tajawal',sans-serif;font-size:11px;color:rgba(255,255,255,.38);margin-top:2px;direction:rtl}
+.smeta-ar{display:flex;align-items:center;flex-direction:row-reverse;gap:13px}
+.prog-wrap{margin:14px 0}
+.prog-lbl{font-size:10px;color:rgba(255,255,255,.38);margin-bottom:5px;display:flex;justify-content:space-between}
+.prog-lbl-ar{font-family:'Tajawal',sans-serif;font-size:11px;color:rgba(255,255,255,.38);margin-bottom:5px;display:flex;justify-content:space-between;direction:rtl}
+.prog-bar{height:4px;background:rgba(255,255,255,.08);border-radius:100px;overflow:hidden}
+.prog-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--gold),var(--cyan));transition:width 1.5s ease;width:0}
+
+/* ─── SOCIAL LINKS ─── */
+.social-sec{background:var(--navy);padding:70px 24px}
+.social-grid{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:44px}
+.soc-card{display:flex;flex-direction:column;align-items:center;gap:10px;padding:26px 30px;border-radius:20px;text-decoration:none;transition:all .25s;min-width:130px;position:relative;overflow:hidden}
+.soc-card::before{content:'';position:absolute;inset:0;opacity:.12;transition:opacity .2s}
+.soc-card:hover{transform:translateY(-7px) scale(1.05)}
+.soc-card:hover::before{opacity:.22}
+.soc-fb{background:rgba(24,119,242,.15);border:1px solid rgba(24,119,242,.3);color:#1877F2}
+.soc-fb::before{background:#1877F2}
+.soc-ig{background:rgba(225,48,108,.15);border:1px solid rgba(225,48,108,.3);color:#E1306C}
+.soc-ig::before{background:#E1306C}
+.soc-yt{background:rgba(255,0,0,.15);border:1px solid rgba(255,0,0,.3);color:#FF0000}
+.soc-yt::before{background:#FF0000}
+.soc-tk{background:rgba(105,201,208,.15);border:1px solid rgba(105,201,208,.3);color:#69C9D0}
+.soc-tk::before{background:#69C9D0}
+.soc-wa{background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.3);color:var(--wa)}
+.soc-wa::before{background:var(--wa)}
+.soc-icon{font-size:36px}
+.soc-name{font-size:13px;font-weight:700;color:#fff}
+.soc-handle{font-size:11px;color:rgba(255,255,255,.4)}
+
+/* ─── CONTACT / CTA ─── */
+.contact-sec{background:var(--deep);padding:100px 24px;position:relative;overflow:hidden}
+.cta-orb{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(245,200,66,.07),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;animation:orbP 4s ease-in-out infinite}
+@keyframes orbP{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.14)}}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+@media(max-width:780px){.contact-grid{grid-template-columns:1fr}}
+.contact-left{}
+.contact-left .s-desc{margin-bottom:36px}
+.phone-cards{display:flex;flex-direction:column;gap:14px}
+.ph-card{display:flex;align-items:center;gap:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px 20px;text-decoration:none;transition:all .2s;color:#fff}
+.ph-card:hover{background:rgba(37,211,102,.08);border-color:rgba(37,211,102,.3);transform:translateX(5px)}
+.ph-icon-wrap{width:48px;height:48px;border-radius:14px;background:var(--wa);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;box-shadow:0 6px 18px rgba(37,211,102,.3)}
+.ph-num{font-size:17px;font-weight:700;color:#fff}
+.ph-lbl{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+.ph-actions{display:flex;gap:8px;margin-top:8px}
+.ph-btn{font-size:11px;font-weight:600;padding:4px 12px;border-radius:100px;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:4px}
+.ph-call{background:rgba(26,86,219,.2);color:var(--cyan);border:1px solid rgba(6,197,208,.25)}
+.ph-call:hover{background:rgba(6,197,208,.15)}
+.ph-wbtn{background:rgba(37,211,102,.15);color:var(--wa);border:1px solid rgba(37,211,102,.25)}
+.ph-wbtn:hover{background:rgba(37,211,102,.25)}
+
+/* Contact form */
+.contact-form{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:22px;padding:36px}
+.form-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:800;margin-bottom:24px}
+.form-group{margin-bottom:18px}
+.form-label{font-size:12px;font-weight:600;color:rgba(255,255,255,.55);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:7px}
+.form-input,.form-select,.form-textarea{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:13px 16px;font-size:14px;color:#fff;font-family:'Outfit',sans-serif;transition:border-color .2s,background .2s;outline:none}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold);background:rgba(245,200,66,.05)}
+.form-input::placeholder,.form-textarea::placeholder{color:rgba(255,255,255,.25)}
+.form-select option{background:var(--navy);color:#fff}
+.form-textarea{resize:vertical;min-height:100px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:500px){.form-row{grid-template-columns:1fr}}
+.form-submit{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#050D1A;font-weight:700;font-size:16px;padding:15px;border-radius:14px;border:none;cursor:pointer;transition:transform .2s,box-shadow .2s;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+.form-submit:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(245,200,66,.4)}
+.form-note{font-size:11px;color:rgba(255,255,255,.3);text-align:center;margin-top:12px}
+
+/* ─── FOOTER ─── */
+footer{background:var(--deep);border-top:1px solid rgba(255,255,255,.05);padding:52px 24px 30px}
+.footer-inner{max-width:1120px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}
+@media(max-width:800px){.footer-top{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.footer-top{grid-template-columns:1fr}}
+.footer-brand .fb-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;margin-bottom:12px;text-decoration:none}
+.fb-logo span{background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.fb-desc{font-size:13px;color:rgba(255,255,255,.4);line-height:1.7;margin-bottom:20px}
+.footer-social{display:flex;gap:10px;flex-wrap:wrap}
+.fs-btn{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;text-decoration:none;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);transition:all .2s}
+.fs-btn:hover{background:rgba(245,200,66,.12);border-color:rgba(245,200,66,.25);transform:translateY(-2px)}
+.footer-col h4{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:16px}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.footer-col ul li a{font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;transition:color .2s;display:flex;align-items:center;gap:6px}
+.footer-col ul li a:hover{color:var(--gold)}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:24px;border-top:1px solid rgba(255,255,255,.05);flex-wrap:wrap;gap:12px}
+.fc-copy{font-size:12px;color:rgba(255,255,255,.25)}
+.fc-wa-strip{display:flex;gap:12px;flex-wrap:wrap}
+.wa-strip-btn{display:flex;align-items:center;gap:7px;background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.2);color:var(--wa);font-size:13px;font-weight:700;padding:8px 16px;border-radius:100px;text-decoration:none;transition:all .2s}
+.wa-strip-btn:hover{background:rgba(37,211,102,.18);transform:translateY(-2px)}
+
+/* Sticky WA button */
+.wa-sticky{position:fixed;bottom:28px;right:28px;z-index:999;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.wa-sticky-btn{width:58px;height:58px;border-radius:50%;background:var(--wa);display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 8px 30px rgba(37,211,102,.5);text-decoration:none;animation:waPop 2.5s ease-in-out infinite;transition:transform .2s}
+.wa-sticky-btn:hover{transform:scale(1.12)}
+@keyframes waPop{0%,100%{box-shadow:0 8px 30px rgba(37,211,102,.5)}50%{box-shadow:0 12px 50px rgba(37,211,102,.8)}}
+.wa-tooltip{background:var(--wa);color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:100px;animation:fadeIn .3s ease;white-space:nowrap}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- STICKY WHATSAPP -->
+<div class="wa-sticky">
+  <div class="wa-tooltip">💬 Chat with us!</div>
+  <a href="https://wa.me/201151176393?text=Hello%20Mr.%20Saleh%2C%20I%20would%20like%20to%20book%20a%20free%20trial%20class." target="_blank" class="wa-sticky-btn" title="WhatsApp Us">💬</a>
+</div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span>🎓 English Fluency Academy</span><span>✦ Free Trial Class — Book Now</span><span>🏆 Mr. Saleh Mohamed</span><span>📞 +20 115 117 6393</span><span>🌍 Online & In-Person</span><span>⭐ 3,500+ Graduates</span><span>✦ Kids & Adults Programs</span><span>🎓 English Fluency Academy</span><span>✦ Free Trial Class — Book Now</span><span>🏆 Mr. Saleh Mohamed</span><span>📞 +20 115 117 6393</span><span>🌍 Online & In-Person</span><span>⭐ 3,500+ Graduates</span><span>✦ Kids & Adults Programs</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#hero" class="nav-logo">🎓 English Fluency <span class="logo-pill">Academy</span></a>
+  <div class="nav-links">
+    <a href="#about">About Mr. Saleh</a>
+    <a href="#kids">For Kids</a>
+    <a href="#adults">For Adults</a>
+    <a href="#stories">Reviews</a>
+    <a href="#social">Connect</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-right">
+    <a href="https://wa.me/201151176393?text=Hello%20Mr.%20Saleh%2C%20I%20would%20like%20to%20book%20a%20free%20trial%20class." target="_blank" class="nav-wa">💬 <span>WhatsApp</span></a>
+    <a href="#contact" class="nav-cta">Free Trial →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-grid"></div>
+  <div class="globe-wrap"><div class="globe"></div><div class="gring"></div></div>
+  <div class="particles" id="pts"></div>
+  <div class="float-cards">
+    <div class="fc fc1"><span class="fc-icon">🎖️</span><div><div class="fc-t">Top Rated Academy</div><div class="fc-s">15+ Years Excellence</div></div></div>
+    <div class="fc fc2"><span class="fc-icon">🌍</span><div><div class="fc-t">Native-Level Results</div><div class="fc-s">Proven method</div></div></div>
+    <div class="fc fc3"><span class="fc-icon">👨‍👩‍👧</span><div><div class="fc-t">Kids & Adults</div><div class="fc-s">All ages welcome</div></div></div>
+    <div class="fc fc4"><span class="fc-icon">⭐</span><div><div class="fc-t">98% Success Rate</div><div class="fc-s">Student satisfaction</div></div></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">✦ Now Enrolling — 2026</div>
+    <h1 class="hero-title">
+      <span class="ht-1">Speak English</span>
+      <span class="ht-2">Like a Native</span>
+      <span class="ht-3">English Fluency Academy</span>
+    </h1>
+    <p class="hero-sub">Under the expert guidance of <strong>Mr. Saleh Mohamed</strong> — transforming beginners into confident, fluent English speakers. Children, adults, every dream.</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-gold">🎓 Book Free Trial Class</a>
+      <a href="https://wa.me/201151176393?text=Hello%20Mr.%20Saleh%2C%20I%20would%20like%20to%20book%20a%20free%20trial%20class." target="_blank" class="btn-wa">💬 WhatsApp Now</a>
+      <a href="#stories" class="btn-outline">⭐ Read Reviews</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><div class="hs-n">3,500+</div><div class="hs-l">Students</div></div>
+      <div class="hs"><div class="hs-n">15+</div><div class="hs-l">Years</div></div>
+      <div class="hs"><div class="hs-n">98%</div><div class="hs-l">Fluency Rate</div></div>
+      <div class="hs"><div class="hs-n">40+</div><div class="hs-l">Countries</div></div>
+    </div>
+  </div>
+  <div class="scroll-hint"><span class="sh-txt">Scroll</span><span class="sh-arr"></span></div>
+</section>
+
+<!-- ABOUT MR SALEH -->
+<section class="section about-sec" id="about">
+  <div class="about-glow"></div>
+  <div class="inner">
+    <div class="about-grid">
+      <div class="portrait-wrap reveal">
+        <div class="portrait-3d">
+          <div class="p-bg"></div>
+          <div class="p-inner"><div class="p-avatar">👨‍🏫</div><div class="p-name">Mr. Saleh Mohamed</div><div class="p-role">Master English Educator</div></div>
+          <div class="p-badge"><span class="pb-n">15+</span><span class="pb-t">Yrs Teaching</span></div>
+          <div class="p-glow"></div>
+        </div>
+      </div>
+      <div class="about-text reveal">
+        <span class="s-tag tag-gold">About the Founder</span>
+        <h2 class="s-title">Meet <span class="gold-w">Mr. Saleh<br>Mohamed</span></h2>
+        <p class="about-bio" style="margin-top:16px">Mr. Saleh Mohamed is one of the most trusted and beloved English language educators in the region — a teacher whose name is passed from one grateful family to the next. With over <strong style="color:var(--gold)">15 years of teaching experience</strong> and thousands of transformed students, his approach is both deeply human and extraordinarily effective.</p>
+        <p class="about-bio">He founded the <strong style="color:var(--cyan)">English Fluency Academy</strong> on a single belief: that anyone — any age, any background, any starting level — can learn to speak English with complete confidence. His "Fluency First" method breaks every barrier and delivers results that last a lifetime.</p>
+        <div class="creds">
+          <div class="cred"><span class="cred-icon">🎓</span><span class="cred-txt">Advanced Certified in TESOL & Applied Linguistics</span></div>
+          <div class="cred"><span class="cred-icon">🏆</span><span class="cred-txt">Award-Winning Educator — Regional Excellence in English Teaching</span></div>
+          <div class="cred"><span class="cred-icon">💡</span><span class="cred-txt">Creator of the "Fluency First" Method — speak before you study</span></div>
+          <div class="cred"><span class="cred-icon">📖</span><span class="cred-txt">Specialist in Kids English, Business English & IELTS/TOEFL Prep</span></div>
+          <div class="cred"><span class="cred-icon">🌍</span><span class="cred-txt">Has trained students from 40+ countries to native-level fluency</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KIDS -->
+<section class="section kids-sec" id="kids">
+  <div class="inner">
+    <div class="kids-grid">
+      <div class="reveal">
+        <div class="age-pill ap-kids">👧 Ages 4 – 16</div>
+        <span class="s-tag tag-gold">Programs for Children</span>
+        <h2 class="s-title">English That <span class="gold-w">Sparks<br>Their Future</span></h2>
+        <p class="s-desc">Mr. Saleh's children's program turns every lesson into an adventure — kids absorb English naturally through joy, play, and imagination.</p>
+        <div class="feats">
+          <div class="feat"><span class="feat-icon">🎮</span><div><div class="feat-ttl">Immersive Game-Based Lessons</div><div class="feat-dsc">Every lesson is an adventure — kids absorb language naturally while playing.</div></div></div>
+          <div class="feat"><span class="feat-icon">🎤</span><div><div class="feat-ttl">Speaking Confidence from Day 1</div><div class="feat-dsc">Children talk in English from their very first class — no shyness allowed.</div></div></div>
+          <div class="feat"><span class="feat-icon">🏅</span><div><div class="feat-ttl">Star Achievement & Rewards</div><div class="feat-dsc">Certificates, level-up moments and surprises that keep kids motivated.</div></div></div>
+          <div class="feat"><span class="feat-icon">📋</span><div><div class="feat-ttl">Weekly Parent Progress Reports</div><div class="feat-dsc">Detailed updates so parents see exactly how their child is blossoming.</div></div></div>
+        </div>
+        <a href="#contact" class="btn-gold" style="margin-top:28px;display:inline-flex">🎓 Enroll My Child</a>
+      </div>
+      <div class="reveal" style="display:flex;justify-content:center;align-items:center;padding:30px 0">
+        <div class="card-stack">
+          <div class="sc sc1"><div class="sc-inner"><div class="sc-emoji">🌈</div><div class="sc-ttl">Little Stars</div><div class="sc-sub">Ages 4 – 7 • Beginner</div></div></div>
+          <div class="sc sc2"><div class="sc-inner"><div class="sc-emoji">🚀</div><div class="sc-ttl">Junior Explorers</div><div class="sc-sub">Ages 8 – 12 • All Levels</div></div></div>
+          <div class="sc sc3"><div class="sc-inner"><div class="sc-emoji">🎯</div><div class="sc-ttl">Teen Leaders</div><div class="sc-sub">Ages 13 – 16 • Advanced</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADULTS -->
+<section class="section adults-sec" id="adults">
+  <div class="inner">
+    <div class="adults-grid">
+      <div class="av-right reveal" style="display:flex;align-items:center;justify-content:center">
+        <div class="box3d-wrap">
+          <div class="box3d">
+            <div class="bf bf-front"><span class="bi">💼</span><div class="bt">Business English</div><div class="bs">Career Growth</div></div>
+            <div class="bf bf-back"><span class="bi">🎯</span><div class="bt">IELTS / TOEFL</div><div class="bs">Exam Excellence</div></div>
+            <div class="bf bf-right"><span class="bi">🗣️</span><div class="bt">Fluent Speaking</div><div class="bs">Native Level</div></div>
+            <div class="bf bf-left"><span class="bi">✍️</span><div class="bt">Writing Mastery</div><div class="bs">Academic & Pro</div></div>
+            <div class="bf bf-top"><span class="bi">🌐</span></div>
+            <div class="bf bf-bot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="age-pill ap-adults">👩‍💼 Ages 17+</div>
+        <span class="s-tag tag-cyan">Programs for Adults</span>
+        <h2 class="s-title">English That <span class="cyan-w">Changes<br>Everything</span></h2>
+        <p class="s-desc">Chasing a promotion, a visa, a degree, or the joy of speaking freely — Mr. Saleh's adult courses deliver real, lasting transformation.</p>
+        <div class="feats">
+          <div class="feat"><span class="feat-icon">💼</span><div><div class="feat-ttl">Business & Professional English</div><div class="feat-dsc">Command every meeting, email and presentation with total confidence.</div></div></div>
+          <div class="feat"><span class="feat-icon">📅</span><div><div class="feat-ttl">Flexible Morning, Evening & Online</div><div class="feat-dsc">Classes around your schedule — never miss a lesson because life got busy.</div></div></div>
+          <div class="feat"><span class="feat-icon">📝</span><div><div class="feat-ttl">IELTS & TOEFL Intensive Prep</div><div class="feat-dsc">Students consistently achieve Band 7+ and B2/C1 results.</div></div></div>
+          <div class="feat"><span class="feat-icon">🎙️</span><div><div class="feat-ttl">Conversation & Accent Training</div><div class="feat-dsc">Speak with natural rhythm, intonation and vocabulary that turns heads.</div></div></div>
+        </div>
+        <a href="#contact" class="btn-gold" style="margin-top:28px;display:inline-flex">🎓 Start My Free Trial</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NUMBERS -->
+<section class="nums-sec reveal">
+  <div class="inner" style="text-align:center">
+    <span class="s-tag tag-gold" style="display:inline-block;margin:0 auto 12px">The Academy</span>
+    <h2 class="s-title" style="text-align:center">English Fluency Academy <br><span class="gold-w">By the Numbers</span></h2>
+    <div class="nums-grid" style="margin-top:52px">
+      <div class="num-card"><span class="ni">🎓</span><span class="nn">3,500+</span><span class="nl">Graduates</span></div>
+      <div class="num-card"><span class="ni">🌍</span><span class="nn">40+</span><span class="nl">Countries</span></div>
+      <div class="num-card"><span class="ni">📅</span><span class="nn">15+</span><span class="nl">Years Active</span></div>
+      <div class="num-card"><span class="ni">⭐</span><span class="nn">98%</span><span class="nl">Satisfaction</span></div>
+      <div class="num-card"><span class="ni">🏆</span><span class="nn">12</span><span class="nl">Awards Won</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why-sec">
+  <div class="inner">
+    <span class="s-tag tag-gold reveal">Why We're Different</span>
+    <h2 class="s-title reveal" style="margin-bottom:0">The <span class="gold-w">Fluency Academy</span> Advantage</h2>
+    <div class="why-grid">
+      <div class="why-card reveal"><span class="wi">🧠</span><div class="wt">The Fluency First Method</div><div class="wd">Students speak from Day 1, not after years of grammar rules.</div></div>
+      <div class="why-card reveal"><span class="wi">👥</span><div class="wt">Small Intimate Classes</div><div class="wd">Maximum 8 students per group — personal attention guaranteed.</div></div>
+      <div class="why-card reveal"><span class="wi">💻</span><div class="wt">Online & In-Person</div><div class="wd">Live virtual or face-to-face — identical world-class quality.</div></div>
+      <div class="why-card reveal"><span class="wi">📜</span><div class="wt">Official Certificates</div><div class="wd">Internationally recognized certificates at every level milestone.</div></div>
+      <div class="why-card reveal"><span class="wi">🎯</span><div class="wt">60-Day Progress Guarantee</div><div class="wd">Improve measurably in 60 days — or you continue for free.</div></div>
+      <div class="why-card reveal"><span class="wi">💛</span><div class="wt">A Family, Not a School</div><div class="wd">Warm, encouraging, safe — students say it feels like home.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- STORIES / REVIEWS -->
+<section class="stories-sec" id="stories">
+  <div class="inner">
+    <span class="s-tag tag-coral reveal">Real People. Real Results.</span>
+    <h2 class="s-title reveal">Students Who Found Their <span class="gold-w">Voice</span></h2>
+    <p class="s-desc reveal">Real journeys — lives changed after studying with Mr. Saleh Mohamed.</p>
+    <!-- TABS -->
+    <div class="reviews-tabs reveal">
+      <button class="rtab active" onclick="switchTab('en',this)">🇬🇧 English Reviews</button>
+      <button class="rtab" onclick="switchTab('ar',this)">🇸🇦 تقييمات عربية</button>
+    </div>
+
+    <!-- ENGLISH PANEL -->
+    <div class="reviews-panel active en-grid" id="panel-en">
+      <!-- EN 1 -->
+      <div class="story-card reveal"><div class="sq">"</div><div class="sflag">🇸🇦</div><div class="sstars">★★★★★</div><p class="stxt">I came to Mr. Saleh barely able to say "hello." After 4 months I walked into a job interview at an international company and spoke fluent, confident English. I got the job. My salary doubled. This man didn't just teach me English — he changed the entire direction of my life.</p><div class="prog-wrap"><div class="prog-lbl"><span>Level on Arrival: A1</span><span>Now: C1 Fluent ✓</span></div><div class="prog-bar"><div class="prog-fill" data-w="95"></div></div></div><div class="smeta" style="margin-top:14px"><div class="sav av1">K</div><div><div class="sname">Khalid Al-Rashid</div><div class="srole">Business Executive, Saudi Arabia</div></div></div></div>
+      <!-- EN 2 -->
+      <div class="story-card reveal"><div class="sq">"</div><div class="sflag">🇪🇬</div><div class="sstars">★★★★★</div><p class="stxt">My daughter Hana was 7 and terrified of English at school. The kids would laugh. She came home crying every day. Mr. Saleh worked with her every week — with extraordinary patience. Six months later she performed a full English play at school. She now corrects MY English! I will forever be grateful.</p><div class="prog-wrap"><div class="prog-lbl"><span>From: Crying & Shy</span><span>To: School Star ✓</span></div><div class="prog-bar"><div class="prog-fill" data-w="92"></div></div></div><div class="smeta" style="margin-top:14px"><div class="sav av2">N</div><div><div class="sname">Nadia Hassan</div><div class="srole">Parent of Hana, Cairo, Egypt</div></div></div></div>
+      <!-- EN 3 -->
+      <div class="story-card reveal"><div class="sq">"</div><div class="sflag">🇲🇦</div><div class="sstars">★★★★★</div><p class="stxt">I needed IELTS 7.0 for my Canadian visa. I had failed twice before. Mr. Saleh rebuilt my confidence from zero. He found every weakness and fixed it. Third attempt: I scored 7.5. I now live in Toronto as an engineer. I owe this entirely to Mr. Saleh's belief in me when I had stopped believing in myself.</p><div class="prog-wrap"><div class="prog-lbl"><span>IELTS 5.5 — Two Fails</span><span>IELTS 7.5 — Canada ✓</span></div><div class="prog-bar"><div class="prog-fill" data-w="100"></div></div></div><div class="smeta" style="margin-top:14px"><div class="sav av3">Y</div><div><div class="sname">Youssef Benali</div><div class="srole">Engineer — Now in Toronto 🇨🇦</div></div></div></div>
+      <!-- EN 4 -->
+      <div class="story-card reveal"><div class="sq">"</div><div class="sflag">🇸🇩</div><div class="sstars">★★★★★</div><p class="stxt">I am 52 years old. My children said I was too old to learn English. Mr. Saleh told me age is just a number. Eight months later I traveled to London and had real conversations with British people — asking directions, chatting with strangers. I cried on that trip. Real tears of joy. The most beautiful feeling of my life.</p><div class="prog-wrap"><div class="prog-lbl"><span>Never Spoken English</span><span>Fluent at 52 ✓</span></div><div class="prog-bar"><div class="prog-fill" data-w="88"></div></div></div><div class="smeta" style="margin-top:14px"><div class="sav av4">F</div><div><div class="sname">Fatima Ibrahim</div><div class="srole">Teacher, Sudan — General English</div></div></div></div>
+      <!-- EN 5 -->
+      <div class="story-card reveal"><div class="sq">"</div><div class="sflag">🇱🇾</div><div class="sstars">★★★★★</div><p class="stxt">My twin boys aged 10 were struggling in their international school. Mr. Saleh created a special plan for both together. The competition made it exciting! Within a year they were top of their English class. One of them now wants to become an English teacher — just like Mr. Saleh. Our whole family adores him.</p><div class="prog-wrap"><div class="prog-lbl"><span>Struggling at School</span><span>Top of English Class ✓</span></div><div class="prog-bar"><div class="prog-fill" data-w="97"></div></div></div><div class="smeta" style="margin-top:14px"><div class="sav av5">O</div><div><div class="sname">Omar Al-Zawawi</div><div class="srole">Father of Twin Students, Libya</div></div></div></div>
+      <!-- EN 6 -->
+      <div class="story-card reveal"><div class="sq">"</div><div class="sflag">🇮🇶</div><div class="sstars">★★★★★</div><p class="stxt">I moved abroad for my PhD and feared my English wasn't academic enough. Mr. Saleh's course was a revelation. He taught me how to write essays and research papers the way native academics do. My first paper was published. My supervisor asked who taught me to write so well. I told her — she was amazed.</p><div class="prog-wrap"><div class="prog-lbl"><span>Pre-Academic Level</span><span>Published Researcher ✓</span></div><div class="prog-bar"><div class="prog-fill" data-w="93"></div></div></div><div class="smeta" style="margin-top:14px"><div class="sav av6">S</div><div><div class="sname">Sara Al-Jubouri</div><div class="srole">PhD Researcher, Iraq → UK</div></div></div></div>
+    </div>
+
+    <!-- ARABIC PANEL -->
+    <div class="reviews-panel ar-grid" id="panel-ar">
+      <!-- AR 1 -->
+      <div class="story-card reveal"><div class="sq">"</div><div class="sflag">🇦🇪</div><div class="sstars">★★★★★</div><p class="stxt-ar">كنت أعمل في شركة دولية وكانت الإنجليزية تعيق ترقيتي منذ سنوات. جاءتني فرصة العمل في لندن، لكنني رفضتها خوفاً من لغتي. ثم التحقت بالأستاذ صالح. في ثلاثة أشهر فقط، أعادني إلى الحياة من جديد. اليوم أنا مدير إقليمي في تلك الشركة ذاتها، وأُقدّم عروضاً أمام فرق بريطانية وأمريكية بثقة تامة. الأستاذ صالح لم يعلّمني إنجليزية، علّمني كيف أُصدّق نفسي.</p><div class="prog-wrap"><div class="prog-lbl-ar"><span>مستوى ابتدائي متوسط</span><span>✓ طليق تماماً</span></div><div class="prog-bar"><div class="prog-fill" data-w="96"></div></div></div><div class="smeta-ar" style="margin-top:14px"><div class="sav av1">م</div><div style="text-align:right"><div class="sname-ar">محمد العمري</div><div class="srole-ar">مدير إقليمي، الإمارات العربية المتحدة</div></div></div></div>
+      <!-- AR 2 -->
+      <div class="story-card reveal"><div class="sq">"</div><div class="sflag">🇸🇦</div><div class="sstars">★★★★★</div><p class="stxt-ar">ابني ريان كان يرفض الكلام بالإنجليزية في المدرسة ويبكي كل يوم. جربنا معلمين كثيرين لكن بلا نتيجة. حين التحق بالأستاذ صالح، تغيّر كل شيء من الأسبوع الأول. أسلوبه مع الأطفال يختلف تماماً — يجعل الطفل يحب الإنجليزية بدل أن يخافها. اليوم ريان في الصف السادس ويشرح لزملائه قواعد اللغة. الأستاذ صالح نعمة حقيقية.</p><div class="prog-wrap"><div class="prog-lbl-ar"><span>يرفض التحدث إطلاقاً</span><span>✓ يُعلّم زملاءه</span></div><div class="prog-bar"><div class="prog-fill" data-w="94"></div></div></div><div class="smeta-ar" style="margin-top:14px"><div class="sav av2">ن</div><div style="text-align:right"><div class="sname-ar">نورة الشمري</div><div class="srole-ar">أم الطالب ريان، الرياض، السعودية</div></div></div></div>
+      <!-- AR 3 -->
+      <div class="story-card reveal"><div class="sq">"</div><div class="sflag">🇪🇬</div><div class="sstars">★★★★★</div><p class="stxt-ar">رسبت في اختبار الآيلتس مرتين وكدت أستسلم. أحد أصدقائي أخبرني عن الأستاذ صالح. في جلستنا الأولى شعرت أنه يفهمني تماماً — وجد نقاط ضعفي الدقيقة وعالجها بطريقة لم أرها عند أحد من قبل. في المحاولة الثالثة حصلت على 7.5 وقُبلت في الجامعة التي حلمت بها في كندا. لن أنسى هذا الرجل طوال حياتي.</p><div class="prog-wrap"><div class="prog-lbl-ar"><span>آيلتس 5.0 — رسوب مرتين</span><span>✓ 7.5 — قُبل في كندا</span></div><div class="prog-bar"><div class="prog-fill" data-w="100"></div></div></div><div class="smeta-ar" style="margin-top:14px"><div class="sav av3">أ</div><div style="text-align:right"><div class="sname-ar">أحمد فاروق</div><div class="srole-ar">طالب دكتوراه، القاهرة ← كندا 🇨🇦</div></div></div></div>
+      <!-- AR 4 -->
+      <div class="story-card reveal"><div class="sq">"</div><div class="sflag">🇯🇴</div><div class="sstars">★★★★★</div><p class="stxt-ar">أنا امرأة في الخامسة والأربعين، لم أتعلم الإنجليزية في صغري ولم أصدق يوماً أنني سأتكلمها. الأستاذ صالح عاملني باحترام عميق وصبر لا نهاية له. بعد ثمانية أشهر سافرت مع ابنتي إلى لندن وتكلمت مع الناس في المطار والفنادق والمحلات. بكيت من الفرح. زوجي لم يصدق عيناه. هذا الأستاذ غيّر نظرتي لنفسي كلياً.</p><div class="prog-wrap"><div class="prog-lbl-ar"><span>لم تتكلم إنجليزية قط</span><span>✓ طليقة في لندن</span></div><div class="prog-bar"><div class="prog-fill" data-w="90"></div></div></div><div class="smeta-ar" style="margin-top:14px"><div class="sav av4">س</div><div style="text-align:right"><div class="sname-ar">سمية العبادي</div><div class="srole-ar">ربة منزل، عمّان، الأردن</div></div></div></div>
+      <!-- AR 5 -->
+      <div class="story-card reveal"><div class="sq">"</div><div class="sflag">🇰🇼</div><div class="sstars">★★★★★</div><p class="stxt-ar">بناتي الثلاث — ١٠، ١٢، ١٤ سنة — كن يتعلمن عند الأستاذ صالح معاً. كانت المنافسة بينهن تجعل كل درس حدثاً عائلياً. خلال سنة واحدة تحولت بيتنا إلى بيت يتحدث الإنجليزية! الأكبر اجتازت امتحان كامبريدج B2، والأصغر تحضّر الآن لـ IELTS. الأستاذ صالح ليس مجرد معلم، هو يُلهم الأجيال.</p><div class="prog-wrap"><div class="prog-lbl-ar"><span>ثلاث بنات — مستوى متوسط</span><span>✓ Cambridge B2 وآيلتس</span></div><div class="prog-bar"><div class="prog-fill" data-w="98"></div></div></div><div class="smeta-ar" style="margin-top:14px"><div class="sav av5">ف</div><div style="text-align:right"><div class="sname-ar">فهد المطيري</div><div class="srole-ar">أب لثلاث طالبات، الكويت</div></div></div></div>
+      <!-- AR 6 -->
+      <div class="story-card reveal"><div class="sq">"</div><div class="sflag">🇸🇾</div><div class="sstars">★★★★★</div><p class="stxt-ar">انتقلت للعمل في شركة بريطانية وكان رئيسي يشكو أن تقاريري الإنجليزية ضعيفة. كان الأمر محرجاً جداً. التحقت بدورة الكتابة الأكاديمية عند الأستاذ صالح. خلال شهرين أصبحت تقاريري مرجعاً للفريق كله. مديري سألني بدهشة: أين تعلمت هذا الأسلوب؟ أجبته ببساطة: عند أستاذ اسمه صالح محمد. الأستاذ الأفضل في حياتي.</p><div class="prog-wrap"><div class="prog-lbl-ar"><span>تقارير ضعيفة — شكاوى</span><span>✓ مرجع للفريق كله</span></div><div class="prog-bar"><div class="prog-fill" data-w="95"></div></div></div><div class="smeta-ar" style="margin-top:14px"><div class="sav av6">ر</div><div style="text-align:right"><div class="sname-ar">رامي الحلبي</div><div class="srole-ar">مهندس، سوريا ← المملكة المتحدة 🇬🇧</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL LINKS -->
+<section class="social-sec" id="social">
+  <div class="inner" style="text-align:center">
+    <span class="s-tag tag-green reveal" style="display:inline-block;margin:0 auto 12px">Follow & Connect</span>
+    <h2 class="s-title reveal" style="text-align:center">Find Us <span class="cyan-w">Everywhere</span></h2>
+    <p class="s-desc reveal" style="text-align:center;margin:12px auto 0">Follow Mr. Saleh and the Academy on social media for free lessons, tips, student stories, and live Q&A sessions.</p>
+    <div class="social-grid">
+      <a href="https://www.facebook.com/" target="_blank" class="soc-card soc-fb reveal"><span class="soc-icon">📘</span><span class="soc-name">Facebook</span><span class="soc-handle">English Fluency Academy</span></a>
+      <a href="https://www.instagram.com/" target="_blank" class="soc-card soc-ig reveal"><span class="soc-icon">📸</span><span class="soc-name">Instagram</span><span class="soc-handle">@EnglishFluencyAcademy</span></a>
+      <a href="https://www.youtube.com/" target="_blank" class="soc-card soc-yt reveal"><span class="soc-icon">▶️</span><span class="soc-name">YouTube</span><span class="soc-handle">Free Lessons & Tips</span></a>
+      <a href="https://www.tiktok.com/" target="_blank" class="soc-card soc-tk reveal"><span class="soc-icon">🎵</span><span class="soc-name">TikTok</span><span class="soc-handle">@MrSalehEnglish</span></a>
+      <a href="https://wa.me/201151176393" target="_blank" class="soc-card soc-wa reveal"><span class="soc-icon">💬</span><span class="soc-name">WhatsApp</span><span class="soc-handle">+20 115 117 6393</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-sec" id="contact">
+  <div class="cta-orb"></div>
+  <div class="inner" style="position:relative;z-index:2">
+    <div style="text-align:center;margin-bottom:60px">
+      <span class="s-tag tag-gold reveal" style="display:inline-block;margin:0 auto 12px">Book Your Spot</span>
+      <h2 class="s-title reveal" style="text-align:center">Start Your Journey <span class="gold-w">Today</span> 🎓</h2>
+      <p class="s-desc reveal" style="text-align:center;margin:12px auto 0">Your first class is completely <strong style="color:var(--gold)">FREE</strong>. No commitment. Just show up and discover what fluency feels like.</p>
+    </div>
+    <div class="contact-grid">
+      <!-- LEFT: Phones -->
+      <div class="reveal">
+        <span class="s-tag tag-green" style="margin-bottom:18px;display:inline-block">Call or WhatsApp</span>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:800;margin-bottom:16px">Contact <span class="gold-w">Mr. Saleh</span><br>Directly</h3>
+        <p style="font-size:14px;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:28px">Reach out any time — Mr. Saleh and the academy team respond quickly on WhatsApp and phone. We speak Arabic and English.</p>
+        <div class="phone-cards">
+          <a href="https://wa.me/201151176393?text=Hello%20Mr.%20Saleh%2C%20I%20want%20to%20book%20a%20free%20trial%20class." target="_blank" class="ph-card">
+            <div class="ph-icon-wrap">💬</div>
+            <div style="flex:1">
+              <div class="ph-num">+20 115 117 6393</div>
+              <div class="ph-lbl">Mr. Saleh Mohamed — Primary</div>
+              <div class="ph-actions">
+                <a href="tel:+201151176393" class="ph-btn ph-call">📞 Call</a>
+                <a href="https://wa.me/201151176393" target="_blank" class="ph-btn ph-wbtn">💬 WhatsApp</a>
+              </div>
+            </div>
+          </a>
+          <a href="https://wa.me/201554627227?text=Hello%2C%20I%20would%20like%20to%20enroll%20at%20the%20English%20Fluency%20Academy." target="_blank" class="ph-card">
+            <div class="ph-icon-wrap">📱</div>
+            <div style="flex:1">
+              <div class="ph-num">+20 155 462 7227</div>
+              <div class="ph-lbl">Academy Office</div>
+              <div class="ph-actions">
+                <a href="tel:+201554627227" class="ph-btn ph-call">📞 Call</a>
+                <a href="https://wa.me/201554627227" target="_blank" class="ph-btn ph-wbtn">💬 WhatsApp</a>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div style="margin-top:28px;padding:20px;background:rgba(37,211,102,.06);border:1px solid rgba(37,211,102,.18);border-radius:16px">
+          <p style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7">⏰ <strong style="color:#fff">Response Time:</strong> We typically reply within 30 minutes on WhatsApp.<br>🌐 <strong style="color:#fff">Languages:</strong> We communicate in both English and Arabic.<br>🎓 <strong style="color:#fff">Free Trial:</strong> No payment needed — just book and come!</p>
+        </div>
+      </div>
+      <!-- RIGHT: Form -->
+      <div class="contact-form reveal">
+        <h3 class="form-title">Book Your <span class="gold-w">Free Trial</span></h3>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" placeholder="Your first name"></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" placeholder="Your last name"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Phone / WhatsApp</label><input type="tel" class="form-input" placeholder="+20 ..."></div>
+        <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" placeholder="your@email.com"></div>
+        <div class="form-group"><label class="form-label">I'm enrolling for</label>
+          <select class="form-select"><option value="">Select program…</option><option>Kids Program (Ages 4–7)</option><option>Kids Program (Ages 8–12)</option><option>Teens Program (Ages 13–16)</option><option>General English for Adults</option><option>Business English</option><option>IELTS / TOEFL Preparation</option><option>Conversation & Speaking</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Preferred Schedule</label>
+          <select class="form-select"><option value="">Select…</option><option>Morning (9am – 12pm)</option><option>Afternoon (12pm – 4pm)</option><option>Evening (4pm – 8pm)</option><option>Weekend only</option><option>Online – flexible</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Message (optional)</label><textarea class="form-textarea" placeholder="Tell us a bit about your goals or questions…"></textarea></div>
+        <a href="https://wa.me/201151176393?text=Hello%20Mr.%20Saleh%2C%20I%20would%20like%20to%20book%20a%20free%20trial%20class." target="_blank" class="form-submit">🎓 Send via WhatsApp &amp; Book Free Trial →</a>
+        <div class="form-note">Your information is private and will only be used to contact you about your free class.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#hero" class="fb-logo">🎓 English Fluency <span>Academy</span></a>
+        <p class="fb-desc">Founded and led by Mr. Saleh Mohamed. Transforming students into confident, fluent English speakers since 2009. Online and in-person classes for all ages.</p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/" target="_blank" class="fs-btn" title="Facebook">📘</a>
+          <a href="https://www.instagram.com/" target="_blank" class="fs-btn" title="Instagram">📸</a>
+          <a href="https://www.youtube.com/" target="_blank" class="fs-btn" title="YouTube">▶️</a>
+          <a href="https://www.tiktok.com/" target="_blank" class="fs-btn" title="TikTok">🎵</a>
+          <a href="https://wa.me/201151176393" target="_blank" class="fs-btn" title="WhatsApp">💬</a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Programs</h4><ul>
+        <li><a href="#kids">🌈 Little Stars (4–7)</a></li>
+        <li><a href="#kids">🚀 Junior Explorers (8–12)</a></li>
+        <li><a href="#kids">🎯 Teen Leaders (13–16)</a></li>
+        <li><a href="#adults">💼 Business English</a></li>
+        <li><a href="#adults">📝 IELTS / TOEFL Prep</a></li>
+        <li><a href="#adults">🗣️ Conversation Club</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Quick Links</h4><ul>
+        <li><a href="#about">👨‍🏫 About Mr. Saleh</a></li>
+        <li><a href="#stories">⭐ Student Reviews</a></li>
+        <li><a href="#social">📱 Social Media</a></li>
+        <li><a href="#contact">📞 Contact Us</a></li>
+        <li><a href="#contact">🎓 Free Trial Class</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Contact</h4><ul>
+        <li><a href="tel:+201151176393">📞 +20 115 117 6393</a></li>
+        <li><a href="tel:+201554627227">📱 +20 155 462 7227</a></li>
+        <li><a href="https://wa.me/201151176393" target="_blank">💬 WhatsApp Mr. Saleh</a></li>
+        <li><a href="https://wa.me/201554627227" target="_blank">💬 WhatsApp Office</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="fc-copy">© 2026 English Fluency Academy — Mr. Saleh Mohamed. All Rights Reserved.</span>
+      <div class="fc-wa-strip">
+        <a href="https://wa.me/201151176393?text=Hello%20Mr.%20Saleh%2C%20I%20want%20a%20free%20trial%20class." target="_blank" class="wa-strip-btn">💬 WhatsApp +20 115 117 6393</a>
+        <a href="https://wa.me/201554627227?text=Hello%2C%20I%20want%20to%20enroll." target="_blank" class="wa-strip-btn">💬 WhatsApp +20 155 462 7227</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── TAB SWITCHER ──
+function switchTab(lang, btn) {
+  document.querySelectorAll('.rtab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.reviews-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + lang).classList.add('active');
+  animateBars();
+}
+
+// ── PARTICLES ──
+const pWrap = document.getElementById('pts');
+const pColors = ['rgba(245,200,66,.7)','rgba(6,197,208,.6)','rgba(255,255,255,.4)','rgba(16,212,160,.5)','rgba(26,86,219,.5)'];
+for (let i = 0; i < 42; i++) {
+  const p = document.createElement('div');
+  p.className = 'pt';
+  const sz = 3 + Math.random() * 5;
+  p.style.cssText = `left:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${pColors[i%pColors.length]};animation-duration:${12+Math.random()*16}s;animation-delay:${-Math.random()*20}s;`;
+  pWrap.appendChild(p);
+}
+
+// ── NAV SCROLL EFFECT ──
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('mainNav');
+  nav.style.background = window.scrollY > 60 ? 'rgba(5,13,26,.96)' : 'rgba(5,13,26,.88)';
+});
+
+// ── SCROLL REVEAL ──
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+// ── PROGRESS BARS ──
+function animateBars() {
+  setTimeout(() => {
+    document.querySelectorAll('.reviews-panel.active .prog-fill').forEach(bar => {
+      const w = bar.dataset.w || '80';
+      bar.style.width = '0';
+      requestAnimationFrame(() => {
+        bar.style.transition = 'width 1.4s ease';
+        bar.style.width = w + '%';
+      });
+    });
+  }, 200);
+}
+const barObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) animateBars(); });
+}, { threshold: 0.3 });
+document.querySelectorAll('.stories-sec').forEach(el => barObs.observe(el));
+
+// ── WHATSAPP TOOLTIP HIDE ON SCROLL ──
+let waTooltip = document.querySelector('.wa-tooltip');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 200 && waTooltip) { waTooltip.style.opacity = '0'; waTooltip.style.pointerEvents = 'none'; }
+  else if (waTooltip) { waTooltip.style.opacity = '1'; waTooltip.style.pointerEvents = 'auto'; }
+});
+
+// ── SMOOTH ACTIVE NAV LINKS ──
+const sections = document.querySelectorAll('section[id], footer[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) cur = s.id; });
+  navLinks.forEach(a => {
+    a.style.borderBottomColor = 'transparent';
+    a.style.color = 'rgba(255,255,255,.6)';
+    if (a.getAttribute('href') === '#' + cur) {
+      a.style.color = 'var(--gold)';
+      a.style.borderBottomColor = 'var(--gold)';
+    }
+  });
+});
+</script>
+</body>
+</html>
